@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{% if role %}Modifier{% else %}Ajouter{% endif %} un Rôle</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="libelle">Libellé</label>
+            <select name="libelle" id="libelle" class="form-control" required onchange="updateNiveau()">
+                <option value="">Sélectionner un rôle</option>
+                {% for value, label in role_choices.items %}
+                <option value="{{ value }}" {% if role and role.libelle == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <input type="hidden" name="niveau" id="niveau" value="{% if role %}{{ role.niveau }}{% endif %}">
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3">{% if role %}{{ role.description }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Permissions</label>
+            {% for permission in permissions %}
+            <div class="form-check">
+                <input type="checkbox" 
+                       name="permissions" 
+                       value="{{ permission.id }}" 
+                       id="permission_{{ permission.id }}"
+                       class="form-check-input"
+                       {% if role and permission in role.permissions.all %}checked{% endif %}>
+                <label class="form-check-label" for="permission_{{ permission.id }}">
+                    {{ permission.get_entity_display }} - {{ permission.get_action_display }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-success">{% if role %}Modifier{% else %}Ajouter{% endif %} Rôle</button>
+        <a href="{% url 'liste_roles' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
+<script>
+function updateNiveau() {
+    const niveaux = {
+        'ADMIN': 4,
+        'GESTIONNAIRE': 3,
+        'CONTROLLER': 2,
+        'AGENT': 1
+    };
+    const libelle = document.getElementById('libelle').value;
+    const niveau = niveaux[libelle] || '';
+    document.getElementById('niveau').value = niveau;
+}
+</script>
+{% endblock %}

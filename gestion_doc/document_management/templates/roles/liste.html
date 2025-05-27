@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Liste des Rôles</h1>
+    
+    <a href="{% url 'add_role' %}" class="btn btn-ajouter mb-3">Ajouter un Rôle</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Niveau</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td>{{ role.get_libelle_display }}</td>
+                <td>{{ role.niveau }}</td>
+                <td>{{ role.description|truncatechars:50 }}</td>
+                <td>
+                    <a href="{% url 'detail_role' role.id %}" class="btn btn-detail btn-sm">Détails</a>
+                    <a href="{% url 'update_role' role.id %}" class="btn btn-edit btn-sm">Modifier</a>
+                    <a href="{% url 'delete_role' role.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

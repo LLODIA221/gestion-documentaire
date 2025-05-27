@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Liste des documents{% endblock %}
+{% block content %}
+<h2>Liste des documents</h2>
+<a href="{% url 'add_document' %}" class="btn btn-ajouter">Ajouter un document</a>
+<table>
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>Référence</th>
+            <th>Type</th>
+            <th>Catégorie</th>
+            <th>Agent</th>
+            <th>Date d'expiration</th>
+            <th>Archivé</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ document.libelle }}</td>
+            <td>{{ document.reference }}</td>
+            <td>{{ document.get_type_display }}</td>
+            <td>{{ document.categorie_document }}</td>
+            <td>{{ document.agent }}</td>
+            <td>{{ document.date_expiration|date:'d/m/Y' }}</td>
+            <td>{% if document.is_archived %}Oui{% else %}Non{% endif %}</td>
+            <td>
+                <a href="{% url 'detail_document' document.id %}" class="btn btn-detail btn-sm">Détail</a> |
+                <a href="{% url 'update_document' document.id %}" class="btn btn-edit btn-sm">Modifier</a> |
+                <a href="{% url 'delete_document' document.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">Aucun document trouvé.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Formulaire Agent{% endblock %}
+{% block content %}
+<h2>{% if agent %}Modifier{% else %}Ajouter{% endif %} un agent</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags == 'error' %}style="color:red;"{% elif message.tags == 'success' %}style="color:green;"{% endif %}>{{ message }}</div>
+    {% endfor %}
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    <label>Matricule :</label>
+    <input type="text" name="matricule" value="{{ agent.matricule|default:'' }}" required><br>
+    <label>Prénom :</label>
+    <input type="text" name="prenom" value="{{ agent.prenom|default:'' }}" required><br>
+    <label>Nom :</label>
+    <input type="text" name="nom" value="{{ agent.nom|default:'' }}" required><br>
+    <label>Date de naissance :</label>
+    <input type="date" name="date_naissance" value="{{ agent.date_naissance|date:'Y-m-d'|default:'' }}" required><br>
+    <label>Lieu de naissance :</label>
+    <input type="text" name="lieu_naissance" value="{{ agent.lieu_naissance|default:'' }}" required><br>
+    <label>Adresse :</label>
+    <input type="text" name="adresse" value="{{ agent.adresse|default:'' }}" required><br>
+    <label>Email :</label>
+    <input type="email" name="email" value="{{ agent.email|default:'' }}" required><br>
+    <label>Téléphone :</label>
+    <input type="text" name="telephone" value="{{ agent.telephone|default:'' }}" required><br>
+    <label>Structure :</label>
+    <select name="structure" required>
+        <option value="">---------</option>
+        {% for structure in structures %}
+            <option value="{{ structure.id }}" {% if agent and agent.structure.id == structure.id %}selected{% endif %}>{{ structure.nom }}</option>
+        {% endfor %}
+    </select><br>
+    <label>Actif :</label>
+    <input type="checkbox" name="is_active" {% if agent and agent.is_active %}checked{% endif %}><br>
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'liste_agents' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %} 

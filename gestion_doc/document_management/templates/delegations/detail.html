@@ -1,0 +1,10 @@
+<!-- templates/structure/detail.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Détails de la delegation</h2>
+<p><strong>Nom :</strong> {{ delegation.nom }}</p>
+<p><strong>localisation :</strong> {{ delegation.localisation }}</p>
+<p><strong>Description :</strong> {{ delegation.description }}</p>
+<a href="{% url 'update_delegation' delegation.id %}">Modifier</a>
+<a href="{% url 'delete_delegation' delegation.id %}">Supprimer</a>
+{% endblock %}

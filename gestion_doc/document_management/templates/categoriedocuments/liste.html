@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des catégories de documents{% endblock %}
+
+{% block content %}
+<h2>Liste des catégories de documents</h2>
+
+<a href="{% url 'add_categorieDocument' %}" class="btn btn-ajouter">Ajouter une catégorie</a>
+
+{% if categoriesDocuments %}
+    <table>
+        <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Type d'accès</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categorie in categoriesDocuments %}
+            <tr>
+                <td><strong>{{ categorie.libelle }}</strong></td>
+                <td>{{ categorie.get_type_acces_display }}</td>
+                <td>
+                    <a href="{% url 'detail_categorieDocument' categorie.id %}" class="btn btn-detail btn-sm">Détails</a>
+                    <a href="{% url 'update_categorieDocument' categorie.id %}" class="btn btn-edit btn-sm">Modifier</a>
+                    <a href="{% url 'delete_categorieDocument' categorie.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucune catégorie de document trouvée.</p>
+{% endif %}
+
+{% endblock %}
+

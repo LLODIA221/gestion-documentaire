@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Détail Document{% endblock %}
+{% block content %}
+<h2>Détail du document</h2>
+<ul>
+    <li><strong>Libellé :</strong> {{ document.libelle }}</li>
+    <li><strong>Référence :</strong> {{ document.reference }}</li>
+    <li><strong>Type :</strong> {{ document.get_type_display }}</li>
+    <li><strong>Catégorie :</strong> {{ document.categorie_document }}</li>
+    <li><strong>Agent :</strong> {{ document.agent }}</li>
+    <li><strong>Date d'expiration :</strong> {{ document.date_expiration|date:'d/m/Y' }}</li>
+    <li><strong>Archivé :</strong> {% if document.is_archived %}Oui{% else %}Non{% endif %}</li>
+    <li><strong>Fichier :</strong> <a href="{{ document.fichier.url }}" target="_blank">Télécharger / Voir</a></li>
+</ul>
+<a href="{% url 'update_document' document.id %}">Modifier</a> |
+<a href="{% url 'delete_document' document.id %}">Supprimer</a> |
+<a href="{% url 'liste_documents' %}">Retour à la liste</a>
+<hr>
+<h3>Versions du document</h3>
+<a href="{% url 'add_document_version' document.id %}" class="btn btn-primary">Ajouter une version</a>
+<ul>
+    {% for version in versions %}
+        <li>
+            <strong>v{{ version.version_number }}</strong> - {{ version.created_by }} - {{ version.date_creation|date:'d/m/Y H:i' }}<br>
+            <a href="{{ version.fichier.url }}" target="_blank">Télécharger / Voir</a>
+            {% if version.change_summary %}<br><em>{{ version.change_summary }}</em>{% endif %}
+        </li>
+    {% empty %}
+        <li>Aucune version disponible.</li>
+    {% endfor %}
+</ul>
+{% endblock %} 

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Détails du Rôle</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ role.get_libelle_display }}</h5>
+            
+            <table class="table">
+                <tr>
+                    <th>Libellé</th>
+                    <td>{{ role.get_libelle_display }}</td>
+                </tr>
+                <tr>
+                    <th>Niveau</th>
+                    <td>{{ role.niveau }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ role.description }}</td>
+                </tr>
+                <tr>
+                    <th>Permissions</th>
+                    <td>
+                        <ul>
+                            {% for permission in role.permissions.all %}
+                            <li>{{ permission.get_entity_display }} - {{ permission.get_action_display }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            
+            <div class="mt-3">
+                <a href="{% url 'update_role' role.id %}" class="btn btn-warning">Modifier</a>
+                <a href="{% url 'delete_role' role.id %}" class="btn btn-danger">Supprimer</a>
+                <a href="{% url 'liste_roles' %}" class="btn btn-secondary">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

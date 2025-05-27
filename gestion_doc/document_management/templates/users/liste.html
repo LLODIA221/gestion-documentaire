@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block content %}
+<h2>Liste des utilisateurs</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{% if user.is_active %}Oui{% else %}Non{% endif %}</td>
+            <td>
+                <a href="{% url 'detail_user' user.id %}" class="btn btn-detail btn-sm">Détail</a> |
+                <a href="{% url 'update_user' user.id %}" class="btn btn-edit btn-sm">Modifier</a> |
+                <a href="{% url 'delete_user' user.id %}" class="btn btn-delete btn-sm">Supprimer</a> |
+                <a href="{% url 'reset_password_user' user.id %}" class="btn btn-ajouter btn-sm">Réinitialiser mot de passe</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Aucun utilisateur trouvé.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

@@ -1,0 +1,17 @@
+<!-- templates/structure/detail.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Détails de la Structure</h2>
+<p><strong>Nom :</strong> {{ structure.nom }}</p>
+<p><strong>Description :</strong> {{ structure.description }}</p>
+<p><strong>Délégation :</strong> 
+    {% if structure.delegation %}
+        {{ structure.delegation.nom_delegation}} 
+    {% else %}
+        Aucune délégation
+    {% endif %}
+</p>
+
+<a href="{% url 'update_structure' structure.id %}">Modifier</a>
+<a href="{% url 'delete_structure' structure.id %}">Supprimer</a>
+{% endblock %}

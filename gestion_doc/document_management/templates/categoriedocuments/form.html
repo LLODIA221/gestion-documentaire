@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if categorieDocument %}Modifier{% else %}Ajouter{% endif %} une catégorie de document</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label for="libelle">Libellé :</label>
+    <input type="text" name="libelle" value="{{ categorieDocument.libelle|default_if_none:'' }}" required><br>
+
+    <label for="description">Description :</label>
+    <textarea name="description" required>{{ categorieDocument.description|default_if_none:'' }}</textarea><br>
+
+    <label for="type_acces">Type d'accès :</label>
+    <select name="type_acces" required>
+        {% for key, value in type_acces_choices.items %}
+            <option value="{{ key }}" {% if categorieDocument and categorieDocument.type_acces == key %}selected{% endif %}>
+                {{ value }}
+            </option>
+        {% endfor %}
+    </select><br>
+
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'liste_CategorieDocuments' %}" class="btn btn-secondary">Annuler</a>
+</form>
+
+{% endblock %}
+

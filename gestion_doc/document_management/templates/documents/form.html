@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Formulaire Document{% endblock %}
+{% block content %}
+<h2>{% if document %}Modifier{% else %}Ajouter{% endif %} un document</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags == 'error' %}style="color:red;"{% elif message.tags == 'success' %}style="color:green;"{% endif %}>{{ message }}</div>
+    {% endfor %}
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label>Libellé :</label>
+    <input type="text" name="libelle" value="{{ document.libelle|default:'' }}" required><br>
+    <label>Catégorie :</label>
+    <select name="categorie_document" required>
+        <option value="">---------</option>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if document and document.categorie_document.id == cat.id %}selected{% endif %}>{{ cat.libelle }}</option>
+        {% endfor %}
+    </select><br>
+    <label>Agent :</label>
+    <select name="agent" required>
+        <option value="">---------</option>
+        {% for agent in agents %}
+            <option value="{{ agent.id }}" {% if document and document.agent.id == agent.id %}selected{% endif %}>{{ agent }}</option>
+        {% endfor %}
+    </select><br>
+    <label>Date d'expiration :</label>
+    <input type="date" name="date_expiration" value="{{ document.date_expiration|date:'Y-m-d'|default:'' }}"><br>
+    <label>Fichier :</label>
+    <input type="file" name="fichier" {% if not document %}required{% endif %}><br>
+    {% if document and document.fichier %}
+        <a href="{{ document.fichier.url }}" target="_blank">Voir le fichier actuel</a><br>
+    {% endif %}
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'liste_documents' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %} 

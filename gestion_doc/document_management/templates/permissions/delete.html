@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Supprimer une Permission</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Confirmation de suppression</h5>
+            
+            <p>Êtes-vous sûr de vouloir supprimer cette permission ?</p>
+            
+            <table class="table">
+                <tr>
+                    <th>Entité</th>
+                    <td>{{ permission.get_entity_display }}</td>
+                </tr>
+                <tr>
+                    <th>Action</th>
+                    <td>{{ permission.get_action_display }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ permission.description }}</td>
+                </tr>
+            </table>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                <a href="{% url 'liste_permissions' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

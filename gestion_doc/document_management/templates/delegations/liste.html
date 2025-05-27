@@ -1,0 +1,26 @@
+<!-- liste.html (Délégations) -->
+{% extends 'base.html' %}
+{% block title %}Liste des délégations{% endblock %}
+{% block content %}
+<h2>Liste des Délégations</h2>
+<a href="{% url 'add_delegation' %}" class="btn btn-ajouter">Ajouter une délégation</a>
+<table>
+    
+    <tr>
+        <th>Nom</th>
+        <th>Actions</th>
+    </tr>
+    {% for delegation in delegations %}
+     <tr>
+        <td>
+            {{ delegation.nom_delegation }}
+        </td>
+         <td>
+            <a href="{% url 'detail_delegation' delegation.id %}" class="btn btn-detail btn-sm">Détail</a>
+            <a href="{% url 'update_delegation' delegation.id %}" class="btn btn-edit btn-sm">Modifier</a>
+            <a href="{% url 'delete_delegation' delegation.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+         </td>
+     </tr>
+    {% endfor %}
+</table>
+{% endblock %}

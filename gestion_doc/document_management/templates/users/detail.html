@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Détail Utilisateur{% endblock %}
+{% block content %}
+<h2>Détail de l'utilisateur</h2>
+<ul>
+    <li><strong>Username :</strong> {{ user.username }}</li>
+    <li><strong>Email :</strong> {{ user.email }}</li>
+    <li><strong>Nom :</strong> {{ user.last_name }}</li>
+    <li><strong>Prénom :</strong> {{ user.first_name }}</li>
+    <li><strong>Actif :</strong> {% if user.is_active %}Oui{% else %}Non{% endif %}</li>
+</ul>
+<a href="{% url 'update_user' user.id %}">Modifier</a> |
+<a href="{% url 'delete_user' user.id %}">Supprimer</a> |
+<a href="{% url 'reset_password_user' user.id %}">Réinitialiser mot de passe</a> |
+<a href="{% url 'liste_users' %}">Retour à la liste</a>
+{% endblock %} 

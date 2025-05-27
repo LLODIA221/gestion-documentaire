@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Supprimer Agent{% endblock %}
+{% block content %}
+<h2>Supprimer l'agent</h2>
+<p>Êtes-vous sûr de vouloir supprimer l'agent <strong>{{ agent.get_full_name }}</strong> ({{ agent.matricule }}) ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Oui, supprimer</button>
+    <a href="{% url 'liste_agents' %}">Annuler</a>
+</form>
+{% endblock %} 

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<h1>Tableau de bord</h1>
+<div class="dashboard">
+    <div class="card">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Délégations</div>
+        <div class="card-count"><a href="{% url 'liste_delegations' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">🏛️</div>
+        <div class="card-title">Structures</div>
+        <div class="card-count"><a href="{% url 'liste_structures' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">📂</div>
+        <div class="card-title">Catégories de documents</div>
+        <div class="card-count"><a href="{% url 'liste_CategorieDocuments' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">📄</div>
+        <div class="card-title">Documents</div>
+        <div class="card-count"><a href="{% url 'liste_documents' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">👤</div>
+        <div class="card-title">Agents</div>
+        <div class="card-count"><a href="{% url 'liste_agents' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">🧑‍💼</div>
+        <div class="card-title">Utilisateurs</div>
+        <div class="card-count"><a href="{% url 'liste_users' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">🔑</div>
+        <div class="card-title">Rôles</div>
+        <div class="card-count"><a href="{% url 'liste_roles' %}">Gérer</a></div>
+    </div>
+    <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Permissions</div>
+        <div class="card-count"><a href="{% url 'liste_permissions' %}">Gérer</a></div>
+    </div>
+</div>
+<div class="quick-links">
+    <a href="{% url 'liste_documents' %}" class="btn btn-primary">Gérer les documents</a>
+</div>
+<style>
+.dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 30px;
+}
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    width: 210px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 10px 18px 10px;
+    transition: box-shadow 0.2s;
+}
+.card:hover {
+    box-shadow: 0 4px 16px rgba(44,62,80,0.18);
+}
+.card-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+.card-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    text-align: center;
+}
+.card-count a {
+    background: #18bc9c;
+    color: #fff;
+    padding: 6px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+.card-count a:hover {
+    background: #149174;
+}
+@media (max-width: 900px) {
+    .dashboard { gap: 12px; }
+    .card { width: 45vw; min-width: 150px; }
+}
+@media (max-width: 600px) {
+    .dashboard { flex-direction: column; align-items: center; }
+    .card { width: 90vw; }
+}
+</style>
+{% endblock %}

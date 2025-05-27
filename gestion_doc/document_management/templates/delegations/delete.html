@@ -1,0 +1,11 @@
+<!-- delete.html (Délégation) -->
+{% extends 'base.html' %}
+{% block title %}Supprimer la Délégation{% endblock %}
+{% block content %}
+<h2>Supprimer la Délégation</h2>
+<p>Êtes-vous sûr de vouloir supprimer {{ delegation.nom_delegation }} ?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Supprimer</button>
+</form>
+{% endblock %}

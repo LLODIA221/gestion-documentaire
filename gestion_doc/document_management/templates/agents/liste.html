@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Liste des agents{% endblock %}
+{% block content %}
+<h2>Liste des agents</h2>
+<a href="{% url 'add_agent' %}" class="btn btn-ajouter">Ajouter un agent</a>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Structure</th>
+            <th>Rôle</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for agent in agents %}
+        <tr>
+            <td>{{ agent.matricule }}</td>
+            <td>{{ agent.nom }}</td>
+            <td>{{ agent.prenom }}</td>
+            <td>{{ agent.email }}</td>
+            <td>{{ agent.telephone }}</td>
+            <td>{{ agent.structure }}</td>
+            <td>{{ agent.role }}</td>
+            <td>{% if agent.is_active %}Oui{% else %}Non{% endif %}</td>
+            <td>
+                <a href="{% url 'detail_agent' agent.id %}" class="btn btn-detail btn-sm">Détail</a> |
+                <a href="{% url 'update_agent' agent.id %}" class="btn btn-edit btn-sm">Modifier</a> |
+                <a href="{% url 'delete_agent' agent.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9">Aucun agent trouvé.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} 

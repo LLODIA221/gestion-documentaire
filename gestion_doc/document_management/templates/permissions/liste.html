@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Liste des Permissions</h1>
+    
+    <a href="{% url 'add_permission' %}" class="btn btn-ajouter mb-3">Ajouter une Permission</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Entité</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for permission in permissions %}
+            <tr>
+                <td>{{ permission.get_entity_display }}</td>
+                <td>{{ permission.get_action_display }}</td>
+                <td>{{ permission.description }}</td>
+                <td>
+                    <a href="{% url 'detail_permission' permission.id %}" class="btn btn-detail btn-sm">Détails</a>
+                    <a href="{% url 'update_permission' permission.id %}" class="btn btn-edit btn-sm">Modifier</a>
+                    <a href="{% url 'delete_permission' permission.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

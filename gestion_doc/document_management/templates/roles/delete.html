@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Supprimer un Rôle</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Confirmation de suppression</h5>
+            
+            <p>Êtes-vous sûr de vouloir supprimer ce rôle ?</p>
+            
+            <table class="table">
+                <tr>
+                    <th>Libellé</th>
+                    <td>{{ role.get_libelle_display }}</td>
+                </tr>
+                <tr>
+                    <th>Niveau</th>
+                    <td>{{ role.niveau }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ role.description }}</td>
+                </tr>
+            </table>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                <a href="{% url 'liste_roles' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

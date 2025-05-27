@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{% if structure %}Modifier{% else %}Ajouter{% endif %} une Structure</h2>
+<form method="post">
+    {% csrf_token %}
+      <label>Nom:</label>
+    <input type="text" name="nom_delegation" value="{{ delegation.nom_delegation|default_if_none:'' }}" required><br>
+ 
+    <label>localisation:</label>
+    <input type="text" name="localisation" value="{{ delegation.localisation|default_if_none:'' }}" required>
+    <label>Description:</label>
+    <textarea name="description" value="{{ delegation.description|default_if_none:'' }}" required></textarea>
+    <button type="submit">Enregistrer</button>
+</form>
+{% endblock %}

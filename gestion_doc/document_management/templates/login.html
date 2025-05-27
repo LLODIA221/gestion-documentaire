@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<h2>Connexion</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Matricule :</label>
+    <input type="text" name="matricule" required autofocus><br>
+    <label>Mot de passe :</label>
+    <input type="password" name="password" required><br>
+    <button type="submit">Se connecter</button>
+</form>
+{% if messages %}
+    {% for message in messages %}
+        <div style="color:red;">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% endblock %} 
