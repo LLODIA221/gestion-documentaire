@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Détail du journal{% endblock %}
+{% block content %}
+<h2>Détail de l'événement journalisé</h2>
+<table class="table table-bordered">
+    <tr><th>Date</th><td>{{ journal.timestamp|date:'d/m/Y H:i' }}</td></tr>
+    <tr><th>Utilisateur</th><td>{{ journal.user }}</td></tr>
+    <tr><th>Action</th><td>{{ journal.get_action_display }}</td></tr>
+    <tr><th>Modèle</th><td>{{ journal.model_name }}</td></tr>
+    <tr><th>ID Objet</th><td>{{ journal.object_id }}</td></tr>
+    <tr><th>Détails</th><td>{{ journal.details }}</td></tr>
+    <tr><th>IP</th><td>{{ journal.ip_address }}</td></tr>
+</table>
+<a href="{% url 'liste_journaux' %}" class="btn btn-secondary">Retour à la liste</a>
+{% endblock %} 

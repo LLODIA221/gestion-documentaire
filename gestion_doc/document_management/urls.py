@@ -5,6 +5,7 @@ from  .views import *
 urlpatterns = [
 
     path('',home,name='home'),
+    # urls des structures
     path('structure/', liste_structures, name='liste_structures'),
     path('structure/add/', add_structure, name='add_structure'),
     path('structure/update/<int:structure_id>/', update_structure, name='update_structure'),
@@ -63,4 +64,7 @@ urlpatterns = [
 
     path('login/', custom_login_view, name='login'),
     path('logout/', logout_view, name='logout'),
+
+    path('journaux/', liste_journaux, name='liste_journaux'),
+    path('journaux/<int:journal_id>/', detail_journal, name='detail_journal'),
 ]

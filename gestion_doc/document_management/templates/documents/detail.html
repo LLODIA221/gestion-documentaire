@@ -1,32 +1,62 @@
 {% extends 'base.html' %}
 {% block title %}Détail Document{% endblock %}
 {% block content %}
-<h2>Détail du document</h2>
-<ul>
-    <li><strong>Libellé :</strong> {{ document.libelle }}</li>
-    <li><strong>Référence :</strong> {{ document.reference }}</li>
-    <li><strong>Type :</strong> {{ document.get_type_display }}</li>
-    <li><strong>Catégorie :</strong> {{ document.categorie_document }}</li>
-    <li><strong>Agent :</strong> {{ document.agent }}</li>
-    <li><strong>Date d'expiration :</strong> {{ document.date_expiration|date:'d/m/Y' }}</li>
-    <li><strong>Archivé :</strong> {% if document.is_archived %}Oui{% else %}Non{% endif %}</li>
-    <li><strong>Fichier :</strong> <a href="{{ document.fichier.url }}" target="_blank">Télécharger / Voir</a></li>
-</ul>
-<a href="{% url 'update_document' document.id %}">Modifier</a> |
-<a href="{% url 'delete_document' document.id %}">Supprimer</a> |
-<a href="{% url 'liste_documents' %}">Retour à la liste</a>
+<div style="border:1px solid #e0e0e0; border-radius:8px; padding:20px; margin-bottom:20px; background:#fafbfc;">
+    <h2 style="margin-top:0;">Détail du document</h2>
+    <div style="display:flex; flex-wrap:wrap;">
+        <div style="flex:1 1 300px;">
+            <p><strong>Libellé :</strong> {{ document.libelle }}</p>
+            <p><strong>Référence :</strong> {{ document.reference }}</p>
+            <p><strong>Type :</strong> {{ document.get_type_display }}</p>
+            <p><strong>Catégorie :</strong> {{ document.categorie_document }}</p>
+            <p><strong>Agent :</strong> {{ document.agent }}</p>
+        </div>
+        <div style="flex:1 1 300px;">
+            <p><strong>Date d'expiration :</strong> {{ document.date_expiration|date:'d/m/Y' }}</p>
+            <p><strong>Archivé :</strong> {% if document.is_archived %}Oui{% else %}Non{% endif %}</p>
+            <p><strong>Fichier :</strong>
+                <a href="{{ document.fichier.url }}" target="_blank" class="btn btn-primary btn-sm">Télécharger / Voir</a>
+            </p>
+        </div>
+    </div>
+    <div style="margin-top:15px;">
+        <a href="{% url 'update_document' document.id %}" class="btn btn-primary btn-sm">Modifier</a>
+        <a href="{% url 'delete_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+        <a href="{% url 'liste_documents' %}" class="btn btn-secondary btn-sm">Retour à la liste</a>
+    </div>
+</div>
 <hr>
 <h3>Versions du document</h3>
 <a href="{% url 'add_document_version' document.id %}" class="btn btn-primary">Ajouter une version</a>
-<ul>
-    {% for version in versions %}
-        <li>
-            <strong>v{{ version.version_number }}</strong> - {{ version.created_by }} - {{ version.date_creation|date:'d/m/Y H:i' }}<br>
-            <a href="{{ version.fichier.url }}" target="_blank">Télécharger / Voir</a>
-            {% if version.change_summary %}<br><em>{{ version.change_summary }}</em>{% endif %}
-        </li>
-    {% empty %}
-        <li>Aucune version disponible.</li>
-    {% endfor %}
-</ul>
+<table style="width:100%;margin-top:10px;border-collapse:collapse;">
+    <thead>
+        <tr style="background:#f0f0f0;">
+            <th>Version</th>
+            <th>Créé par</th>
+            <th>Date</th>
+            <th>Résumé</th>
+            <th>Fichier</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for version in versions %}
+        <tr {% if forloop.first %}style="background:#e6ffe6;"{% endif %}>
+            <td>
+                v{{ version.version_number }}
+                {% if forloop.first %}
+                    <span style="color:green;font-weight:bold;">(Dernière)</span>
+                {% endif %}
+            </td>
+            <td>{{ version.created_by }}</td>
+            <td>{{ version.date_creation|date:'d/m/Y H:i' }}</td>
+            <td>{{ version.change_summary|default:"-" }}</td>
+            <td>
+                <a href="{{ version.fichier.url }}" target="_blank" class="btn btn-primary btn-sm">Télécharger / Voir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">Aucune version disponible.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %} 

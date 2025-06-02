@@ -1,18 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Connexion{% endblock %}
 {% block content %}
-<h2>Connexion</h2>
-<form method="post">
-    {% csrf_token %}
-    <label>Matricule :</label>
-    <input type="text" name="matricule" required autofocus><br>
-    <label>Mot de passe :</label>
-    <input type="password" name="password" required><br>
-    <button type="submit">Se connecter</button>
-</form>
-{% if messages %}
-    {% for message in messages %}
-        <div style="color:red;">{{ message }}</div>
-    {% endfor %}
-{% endif %}
+<div style="max-width:400px;margin:40px auto;padding:32px 28px;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(44,62,80,0.08);">
+    <h2 style="text-align:center;margin-bottom:24px;">Connexion</h2>
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <div style="margin-bottom:18px;">
+            <label style="font-weight:500;">Matricule</label><br>
+            <input type="text" name="matricule" required autofocus style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #ccc;">
+        </div>
+        <div style="margin-bottom:18px;">
+            <label style="font-weight:500;">Mot de passe</label><br>
+            <input type="password" name="password" required style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid #ccc;">
+        </div>
+        <button type="submit" class="btn btn-login" style="width:100%;font-size:1.1em;">Se connecter</button>
+    </form>
+    {% if error %}
+        <div style="color:#e74c3c;margin-top:18px;text-align:center;">{{ error }}</div>
+    {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div style="color:#e67e22;margin-top:10px;text-align:center;">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+</div>
 {% endblock %} 

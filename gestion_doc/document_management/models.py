@@ -395,7 +395,7 @@ class DocumentVersion(BaseTimeStampModel):
         return f"{self.document.libelle} v{self.version_number}"
 
     def save(self, *args, **kwargs):
-        if not self.version_number:
+        if not self.pk:  # Only set on creation
             last_version = DocumentVersion.objects.filter(document=self.document).order_by('-version_number').first()
             if last_version:
                 self.version_number = last_version.version_number + 1

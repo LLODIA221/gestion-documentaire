@@ -1,106 +1,163 @@
 {% extends 'base.html' %}
-{% block title %}Tableau de bord{% endblock %}
+
+{% block title %}Accueil{% endblock %}
+
 {% block content %}
-<h1>Tableau de bord</h1>
-<div class="dashboard">
-    <div class="card">
-        <div class="card-icon">🏢</div>
-        <div class="card-title">Délégations</div>
-        <div class="card-count"><a href="{% url 'liste_delegations' %}">Gérer</a></div>
+<div class="dashboard-header mb-4">
+    <h2 class="h3 text-primary">📊 Tableau de bord</h2>
+    <p class="text-muted">Vue d'ensemble du système de gestion documentaire</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-primary shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">🏢 Délégations</h5>
+                    {% if afficher_delegations %}
+                        <p class="card-text display-6 mb-0">{{ nb_delegations|default:0 }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-building fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">🏛️</div>
-        <div class="card-title">Structures</div>
-        <div class="card-count"><a href="{% url 'liste_structures' %}">Gérer</a></div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-success shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">🏛️ Structures</h5>
+                    {% if afficher_structures %}
+                        <p class="card-text display-6 mb-0">{{ nb_structures|default:0 }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-sitemap fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">📂</div>
-        <div class="card-title">Catégories de documents</div>
-        <div class="card-count"><a href="{% url 'liste_CategorieDocuments' %}">Gérer</a></div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-info shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">👨‍💼 Agents</h5>
+                    {% if afficher_agents %}
+                        <p class="card-text display-6 mb-0">{{ nb_agents|default:0 }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-users fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">📄</div>
-        <div class="card-title">Documents</div>
-        <div class="card-count"><a href="{% url 'liste_documents' %}">Gérer</a></div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-warning shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">📄 Documents</h5>
+                    {% if afficher_documents %}
+                        <p class="card-text display-6 mb-0">{{ nb_documents|default:0 }}</p>
+                    {% elif nb_documents_agent is not None %}
+                        <p class="card-text display-6 mb-0">{{ nb_documents_agent }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-file-alt fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">👤</div>
-        <div class="card-title">Agents</div>
-        <div class="card-count"><a href="{% url 'liste_agents' %}">Gérer</a></div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-dark shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">🔐 Rôles</h5>
+                    {% if afficher_roles %}
+                        <p class="card-text display-6 mb-0">{{ nb_roles|default:0 }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-key fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">🧑‍💼</div>
-        <div class="card-title">Utilisateurs</div>
-        <div class="card-count"><a href="{% url 'liste_users' %}">Gérer</a></div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card text-white bg-secondary shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="card-title mb-1">📂 Catégories</h5>
+                    {% if afficher_categories %}
+                        <p class="card-text display-6 mb-0">{{ nb_categories|default:0 }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Non autorisé</p>
+                    {% endif %}
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-folder fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">🔑</div>
-        <div class="card-title">Rôles</div>
-        <div class="card-count"><a href="{% url 'liste_roles' %}">Gérer</a></div>
+    {% if role_name == 'AGENT' %}
+    <div class="col-md-12 mt-4">
+        <div class="card border-primary">
+            <div class="card-body text-center">
+                <h5 class="card-title">📄 Mes documents</h5>
+                <p class="card-text">Consultez tous vos documents personnels ici.</p>
+                <a href="{% url 'liste_documents' %}" class="btn btn-primary">Voir mes documents</a>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-icon">🔒</div>
-        <div class="card-title">Permissions</div>
-        <div class="card-count"><a href="{% url 'liste_permissions' %}">Gérer</a></div>
+    {% endif %}
+</div>
+
+<!-- Section supplémentaire avec graphiques ou activités récentes -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">📈 Résumé d'activité</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Système opérationnel avec <strong>{{ nb_documents|default:0 }}</strong> documents 
+                    répartis dans <strong>{{ nb_categories|default:0 }}</strong> catégories.
+                </p>
+                <div class="row text-center mt-3">
+                    <div class="col-md-3">
+                        <small class="text-muted">Taux d'utilisation</small>
+                        <div class="h5 text-success">85%</div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Documents traités</small>
+                        <div class="h5 text-info">{{ nb_documents|default:0 }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Utilisateurs actifs</small>
+                        <div class="h5 text-warning">{{ nb_agents|default:0 }}</div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Structures gérées</small>
+                        <div class="h5 text-primary">{{ nb_structures|default:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="quick-links">
-    <a href="{% url 'liste_documents' %}" class="btn btn-primary">Gérer les documents</a>
-</div>
-<style>
-.dashboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
-    margin-top: 30px;
-}
-.card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-    width: 210px;
-    min-height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 10px 18px 10px;
-    transition: box-shadow 0.2s;
-}
-.card:hover {
-    box-shadow: 0 4px 16px rgba(44,62,80,0.18);
-}
-.card-icon {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-}
-.card-title {
-    font-size: 1.1em;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #2c3e50;
-    text-align: center;
-}
-.card-count a {
-    background: #18bc9c;
-    color: #fff;
-    padding: 6px 18px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 1em;
-    transition: background 0.2s;
-}
-.card-count a:hover {
-    background: #149174;
-}
-@media (max-width: 900px) {
-    .dashboard { gap: 12px; }
-    .card { width: 45vw; min-width: 150px; }
-}
-@media (max-width: 600px) {
-    .dashboard { flex-direction: column; align-items: center; }
-    .card { width: 90vw; }
-}
-</style>
 {% endblock %}
