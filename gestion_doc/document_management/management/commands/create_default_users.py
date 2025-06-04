@@ -25,6 +25,10 @@ class Command(BaseCommand):
         controller_role = Role.objects.get(libelle='CONTROLLER')
         agent_role = Role.objects.get(libelle='AGENT')
 
+        # Après la création des rôles
+        all_permissions = Permission.objects.all()
+        admin_role.permissions.set(all_permissions)
+
         users_data = [
             {
                 "role": admin_role,

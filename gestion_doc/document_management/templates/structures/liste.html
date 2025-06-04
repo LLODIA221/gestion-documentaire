@@ -1,35 +1,84 @@
-<!-- liste.html (Structures) -->
 {% extends 'base.html' %}
+
 {% block title %}Liste des structures{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Liste des Structures</h1>
-    <a href="{% url 'add_structure' %}" class="btn btn-ajouter mb-3">Ajouter une structure</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Délégation</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for structure in structures %}
-            <tr>
-                <td>{{ structure.nom }}</td>
-                <td>{{ structure.delegation.nom_delegation }}</td>
-                <td>
-                    <a href="{% url 'detail_structure' structure.id %}" class="btn btn-detail btn-sm">Détails</a>
-                    <a href="{% url 'update_structure' structure.id %}" class="btn btn-edit btn-sm">Modifier</a>
-                    <a href="{% url 'delete_structure' structure.id %}" class="btn btn-delete btn-sm">Supprimer</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="text-center">Aucune structure trouvée.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Liste des Structures</h2>
+        {% if can_create_structures %}
+        <a href="{% url 'add_structure' %}" class="btn btn-primary">Ajouter une structure</a>
+        {% endif %}
+    </div>
+
+    {% if structures %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Nom</th>
+                    <th>Délégation</th>
+                    <th style="width: 25%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for structure in structures %}
+                <tr>
+                    <td>{{ structure.nom }}</td>
+                    <td>{{ structure.delegation.nom_delegation }}</td>
+                    <td>
+                        {% if can_read_structures %}
+                        <a href="{% url 'detail_structure' structure.id %}" class="btn btn-sm btn-info me-1">Détails</a>
+                        {% endif %}
+                        {% if can_update_structures %}
+                        <a href="{% url 'update_structure' structure.id %}" class="btn btn-sm btn-warning me-1">Modifier</a>
+                        {% endif %}
+                        {% if can_delete_structures %}
+                        <a href="{% url 'delete_structure' structure.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if structures.paginator.num_pages > 1 %}
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center mt-4">
+              {% if structures.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1">« Première</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ structures.previous_page_number }}">‹ Précédente</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">« Première</span></li>
+                <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+              {% endif %}
+          
+              <li class="page-item disabled">
+                <span class="page-link">Page {{ structures.number }} sur {{ structures.paginator.num_pages }}</span>
+              </li>
+          
+              {% if structures.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ structures.next_page_number }}">Suivante ›</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ structures.paginator.num_pages }}">Dernière »</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+                <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center" role="alert">
+        Aucune structure trouvée.
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

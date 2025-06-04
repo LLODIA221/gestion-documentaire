@@ -1,26 +1,80 @@
-<!-- liste.html (Délégations) -->
 {% extends 'base.html' %}
+
 {% block title %}Liste des délégations{% endblock %}
+
 {% block content %}
-<h2>Liste des Délégations</h2>
-<a href="{% url 'add_delegation' %}" class="btn btn-ajouter">Ajouter une délégation</a>
-<table>
-    
-    <tr>
-        <th>Nom</th>
-        <th>Actions</th>
-    </tr>
-    {% for delegation in delegations %}
-     <tr>
-        <td>
-            {{ delegation.nom_delegation }}
-        </td>
-         <td>
-            <a href="{% url 'detail_delegation' delegation.id %}" class="btn btn-detail btn-sm">Détail</a>
-            <a href="{% url 'update_delegation' delegation.id %}" class="btn btn-edit btn-sm">Modifier</a>
-            <a href="{% url 'delete_delegation' delegation.id %}" class="btn btn-delete btn-sm">Supprimer</a>
-         </td>
-     </tr>
-    {% endfor %}
-</table>
+<div style="border:1px solid #e0e0e0; border-radius:8px; padding:20px; background:#fafbfc;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0;">Liste des délégations</h2>
+        {% if can_create_delegations %}
+        <a href="{% url 'add_delegation' %}" class="btn btn-primary btn-sm">Ajouter une délégation</a>
+        {% endif %}
+    </div>
+
+    {% if delegations %}
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; border:1px solid #ddd;">Nom</th>
+                <th style="padding:10px; border:1px solid #ddd;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for delegation in delegations %}
+            <tr>
+                <td style="padding:8px; border:1px solid #eee;">{{ delegation.nom_delegation }}</td>
+                <td style="padding:8px; border:1px solid #eee;">
+                    {% if can_read_delegations %}
+                    <a href="{% url 'detail_delegation' delegation.id %}" class="btn btn-primary btn-sm">Détail</a>
+                    {% endif %}
+                    {% if can_update_delegations %}
+                    <a href="{% url 'update_delegation' delegation.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                    {% endif %}
+                    {% if can_delete_delegations %}
+                    <a href="{% url 'delete_delegation' delegation.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if delegations.paginator.num_pages > 1 %}
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-4">
+          {% if delegations.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">« Première</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ delegations.previous_page_number }}">‹ Précédente</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">« Première</span></li>
+            <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+          {% endif %}
+      
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ delegations.number }} sur {{ delegations.paginator.num_pages }}</span>
+          </li>
+      
+          {% if delegations.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ delegations.next_page_number }}">Suivante ›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ delegations.paginator.num_pages }}">Dernière »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+            <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    {% else %}
+    <p style="text-align:center; padding:20px; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px;">
+        Aucune délégation trouvée.
+    </p>
+    {% endif %}
+</div>
 {% endblock %}

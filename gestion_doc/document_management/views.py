@@ -8,6 +8,7 @@ import string
 from django.contrib.auth.hashers import make_password
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
+from django.core.paginator import Paginator
 # Create your views here.
 
 @login_required
@@ -37,12 +38,18 @@ def home(request):
         'afficher_roles': has_perm('ROLES'),
         'afficher_categories': has_perm('CATEGORIE_DOCUMENTS'),
     }
+    # Ajout du contexte du context processor pour garantir la présence des variables afficher_*
+    from document_management.context_processors import permissions_context
+    context.update(permissions_context(request))
     return render(request, 'home.html', context)
 
 #urls des structures
 @login_required
 def liste_structures(request):
     Structures = Structure.objects.all()
+    paginator = Paginator(Structures, 10)  # nombre de structure par page
+    page_number = request.GET.get('page')
+    Structures = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'Structure', None, details="Consultation de la liste des structures", request=request)
     return render(request, 'structures/liste.html', {'structures': Structures})
 
@@ -120,6 +127,9 @@ def detail_structure(request, structure_id):
 @login_required
 def liste_delegations(request):
     delegations = Delegation.objects.all()
+    paginator = Paginator(delegations, 10)  # nombre de délégation par page
+    page_number = request.GET.get('page')
+    delegations = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'Delegation', None, details="Consultation de la liste des délégations", request=request)
     return render(request, 'delegations/liste.html', {'delegations': delegations})
 
@@ -171,6 +181,9 @@ def detail_delegation(request, delegation_id):
 def liste_CategorieDocuments(request):
     """Affiche la liste des catégories de documents."""
     categoriesDocuments = CategorieDocument.objects.all()  
+    paginator = Paginator(categoriesDocuments, 10)  # nombre de catégorie par page
+    page_number = request.GET.get('page')
+    categoriesDocuments = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'CategorieDocument', None, details="Consultation de la liste des catégories", request=request)
     return render(request, 'CategorieDocuments/liste.html', {'categoriesDocuments': categoriesDocuments})
 
@@ -228,9 +241,18 @@ def detail_categorieDocument(request, categorieDocument_id):
 
 @login_required
 def liste_permissions(request):
-    permissions = Permission.objects.all()
+    permissions_list = Permission.objects.all().order_by('entity', 'action')
+    paginator = Paginator(permissions_list, 10)  # nombre de permissions par page
+
+    page_number = request.GET.get('page')
+    permissions = paginator.get_page(page_number)  # renvoie un objet Page
+
+    # Logging
     log_event(request.user, 'READ', 'Permission', None, details="Consultation de la liste des permissions", request=request)
-    return render(request, 'permissions/liste.html', {'permissions': permissions})
+
+    return render(request, 'permissions/liste.html', {
+        'permissions': permissions
+    })
 
 
 @login_required
@@ -305,12 +327,25 @@ def detail_permission(request, permission_id):
 @login_required
 def liste_roles(request):
     roles = Role.objects.all()
+    paginator = Paginator(roles, 10)  # nombre de role par page
+    page_number = request.GET.get('page')
+    roles = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'Role', None, details="Consultation de la liste des rôles", request=request)
     return render(request, 'roles/liste.html', {'roles': roles})
 
 @login_required
 def add_role(request):
     permissions = Permission.objects.all()
+    # Grouper les permissions par entité puis par action
+    grouped_permissions = {}
+    for entity, entity_label in Permission.ENTITY_CHOICES:
+        grouped_permissions[entity] = {
+            'label': entity_label,
+            'actions': {}
+        }
+    for perm in permissions:
+        if perm.entity in grouped_permissions:
+            grouped_permissions[perm.entity]['actions'][perm.action] = perm
     if request.method == 'POST':
         libelle = request.POST.get('libelle')
         description = request.POST.get('description')
@@ -326,7 +361,8 @@ def add_role(request):
         return redirect('liste_roles')
 
     return render(request, 'roles/form.html', {
-        'permissions': permissions,
+        'grouped_permissions': grouped_permissions,
+        'permissions': permissions,  # pour compatibilité éventuelle
         'role_choices': dict(Role.ROLE_CHOICES),
     })
 
@@ -335,6 +371,16 @@ def add_role(request):
 def update_role(request, role_id):
     role = get_object_or_404(Role, id=role_id)
     permissions = Permission.objects.all()
+    # Grouper les permissions par entité puis par action
+    grouped_permissions = {}
+    for entity, entity_label in Permission.ENTITY_CHOICES:
+        grouped_permissions[entity] = {
+            'label': entity_label,
+            'actions': {}
+        }
+    for perm in permissions:
+        if perm.entity in grouped_permissions:
+            grouped_permissions[perm.entity]['actions'][perm.action] = perm
     if request.method == 'POST':
         old_libelle = role.libelle
         role.libelle = request.POST.get('libelle')
@@ -348,7 +394,8 @@ def update_role(request, role_id):
 
     return render(request, 'roles/form.html', {
         'role': role,
-        'permissions': permissions,
+        'grouped_permissions': grouped_permissions,
+        'permissions': permissions,  # pour compatibilité éventuelle
         'role_choices': dict(Role.ROLE_CHOICES),
     })
 
@@ -376,6 +423,9 @@ User = get_user_model()
 @login_required
 def liste_agents(request):
     agents = Agent.objects.all()
+    paginator = Paginator(agents, 10)  # nombre de agent par page
+    page_number = request.GET.get('page')
+    agents = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'Agent', None, details="Consultation de la liste des agents", request=request)
     return render(request, 'agents/liste.html', {'agents': agents})
 
@@ -483,6 +533,9 @@ def detail_agent(request, agent_id):
 
 def liste_users(request):
     users = User.objects.all()
+    paginator = Paginator(users, 10)  # nombre de user par page
+    page_number = request.GET.get('page')
+    users = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'User', None, details="Consultation de la liste des utilisateurs", request=request)
     return render(request, 'users/liste.html', {'users': users})
 
@@ -525,7 +578,17 @@ def reset_password_user(request, user_id):
 
 @login_required
 def liste_documents(request):
-    documents = Document.objects.all()
+    agent = getattr(request.user, 'agent_profile', None)
+    role = getattr(agent, 'role', None)
+    role_name = getattr(role, 'libelle', None)
+
+    if role_name == 'AGENT':
+        documents = Document.objects.filter(agent=agent)
+    else:
+        documents = Document.objects.all()
+    paginator = Paginator(documents, 10)  # nombre de document par page
+    page_number = request.GET.get('page')
+    documents = paginator.get_page(page_number)  # renvoie un objet Page
     log_event(request.user, 'READ', 'Document', None, details="Consultation de la liste des documents", request=request)
     return render(request, 'documents/liste.html', {'documents': documents})
 
@@ -666,7 +729,11 @@ def logout_view(request):
 @login_required
 def liste_journaux(request):
     journaux = Journal.objects.select_related('user').order_by('-timestamp')[:200]
+    paginator = Paginator(journaux, 10)  # 10 journaux par page
+    page_number = request.GET.get('page')
+    journaux = paginator.get_page(page_number)
     return render(request, 'journaux/liste.html', {'journaux': journaux})
+
 
 # Vue pour le détail d'un journal
 @login_required

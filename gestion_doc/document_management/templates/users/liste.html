@@ -1,36 +1,90 @@
 {% extends 'base.html' %}
+
 {% block title %}Liste des utilisateurs{% endblock %}
+
 {% block content %}
-<h2>Liste des utilisateurs</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Actif</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.last_name }}</td>
-            <td>{{ user.first_name }}</td>
-            <td>{% if user.is_active %}Oui{% else %}Non{% endif %}</td>
-            <td>
-                <a href="{% url 'detail_user' user.id %}" class="btn btn-detail btn-sm">Détail</a> |
-                <a href="{% url 'update_user' user.id %}" class="btn btn-edit btn-sm">Modifier</a> |
-                <a href="{% url 'delete_user' user.id %}" class="btn btn-delete btn-sm">Supprimer</a> |
-                <a href="{% url 'reset_password_user' user.id %}" class="btn btn-ajouter btn-sm">Réinitialiser mot de passe</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6">Aucun utilisateur trouvé.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %} 
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Liste des utilisateurs</h2>
+       
+    </div>
+
+    {% if users %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Actif</th>
+                    <th style="width: 45%;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">Oui</span>
+                        {% else %}
+                            <span class="badge bg-danger">Non</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'detail_user' user.id %}" class="btn btn-sm btn-info me-1 mb-1">Détail</a>
+                       
+                        <a href="{% url 'update_user' user.id %}" class="btn btn-sm btn-warning me-1 mb-1">Modifier</a>
+                        <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-danger me-1 mb-1">Supprimer</a>
+                        <a href="{% url 'reset_password_user' user.id %}" class="btn btn-sm btn-secondary mb-1">Réinitialiser mot de passe</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if users.paginator.num_pages > 1 %}
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center mt-4">
+              {% if users.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1">« Première</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users.previous_page_number }}">‹ Précédente</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">« Première</span></li>
+                <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+              {% endif %}
+          
+              <li class="page-item disabled">
+                <span class="page-link">Page {{ users.number }} sur {{ users.paginator.num_pages }}</span>
+              </li>
+          
+              {% if users.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users.next_page_number }}">Suivante ›</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ users.paginator.num_pages }}">Dernière »</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+                <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center" role="alert">
+        Aucun utilisateur trouvé.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

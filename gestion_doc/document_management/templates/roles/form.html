@@ -26,19 +26,40 @@
 
         <div class="form-group">
             <label>Permissions</label>
-            {% for permission in permissions %}
-            <div class="form-check">
-                <input type="checkbox" 
-                       name="permissions" 
-                       value="{{ permission.id }}" 
-                       id="permission_{{ permission.id }}"
-                       class="form-check-input"
-                       {% if role and permission in role.permissions.all %}checked{% endif %}>
-                <label class="form-check-label" for="permission_{{ permission.id }}">
-                    {{ permission.get_entity_display }} - {{ permission.get_action_display }}
-                </label>
+            <div class="accordion" id="permissionsAccordion">
+                {% for entity, group in grouped_permissions.items %}
+                <div class="card mb-2">
+                    <div class="card-header p-2" id="heading_{{ entity }}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ entity }}" aria-expanded="true" aria-controls="collapse_{{ entity }}">
+                                {{ group.label }}
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse_{{ entity }}" class="collapse show" aria-labelledby="heading_{{ entity }}" data-bs-parent="#permissionsAccordion">
+                        <div class="card-body">
+                            <div class="row">
+                                {% for action, perm in group.actions.items %}
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               name="permissions"
+                                               value="{{ perm.id }}"
+                                               id="permission_{{ perm.id }}"
+                                               class="form-check-input"
+                                               {% if role and perm in role.permissions.all %}checked{% endif %}>
+                                        <label class="form-check-label" for="permission_{{ perm.id }}">
+                                            {{ perm.get_action_display }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
 
         <button type="submit" class="btn btn-success">{% if role %}Modifier{% else %}Ajouter{% endif %} Rôle</button>

@@ -3,36 +3,80 @@
 {% block title %}Liste des catégories de documents{% endblock %}
 
 {% block content %}
-<h2>Liste des catégories de documents</h2>
+<div style="border:1px solid #e0e0e0; border-radius:8px; padding:20px; background:#fafbfc;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0;">Liste des catégories de documents</h2>
+        {% if can_create_categories %}
+        <a href="{% url 'add_categorieDocument' %}" class="btn btn-primary btn-sm">Ajouter une catégorie</a>
+        {% endif %}
+    </div>
 
-<a href="{% url 'add_categorieDocument' %}" class="btn btn-ajouter">Ajouter une catégorie</a>
-
-{% if categoriesDocuments %}
-    <table>
+    {% if categoriesDocuments %}
+    <table style="width:100%; border-collapse:collapse;">
         <thead>
-            <tr>
-                <th>Libellé</th>
-                <th>Type d'accès</th>
-                <th>Actions</th>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; border:1px solid #ddd;">Libellé</th>
+                <th style="padding:10px; border:1px solid #ddd;">Type d'accès</th>
+                <th style="padding:10px; border:1px solid #ddd;">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for categorie in categoriesDocuments %}
             <tr>
-                <td><strong>{{ categorie.libelle }}</strong></td>
-                <td>{{ categorie.get_type_acces_display }}</td>
-                <td>
-                    <a href="{% url 'detail_categorieDocument' categorie.id %}" class="btn btn-detail btn-sm">Détails</a>
-                    <a href="{% url 'update_categorieDocument' categorie.id %}" class="btn btn-edit btn-sm">Modifier</a>
-                    <a href="{% url 'delete_categorieDocument' categorie.id %}" class="btn btn-delete btn-sm">Supprimer</a>
+                <td style="padding:8px; border:1px solid #eee;"><strong>{{ categorie.libelle }}</strong></td>
+                <td style="padding:8px; border:1px solid #eee;">{{ categorie.get_type_acces_display }}</td>
+                <td style="padding:8px; border:1px solid #eee;">
+                    {% if can_read_categories %}
+                    <a href="{% url 'detail_categorieDocument' categorie.id %}" class="btn btn-primary btn-sm">Détails</a>
+                    {% endif %}
+                    {% if can_update_categories %}
+                    <a href="{% url 'update_categorieDocument' categorie.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                    {% endif %}
+                    {% if can_delete_categories %}
+                    <a href="{% url 'delete_categorieDocument' categorie.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-{% else %}
-    <p>Aucune catégorie de document trouvée.</p>
-{% endif %}
-
+    {% if categoriesDocuments.paginator.num_pages > 1 %}
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-4">
+          {% if categoriesDocuments.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">« Première</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ categories.previous_page_number }}">‹ Précédente</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">« Première</span></li>
+            <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+          {% endif %}
+      
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ categories.number }} sur {{ categories.paginator.num_pages }}</span>
+          </li>
+      
+          {% if categories.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ categories.next_page_number }}">Suivante ›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ categories.paginator.num_pages }}">Dernière »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+            <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    {% else %}
+    <p style="text-align:center; padding:20px; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px;">
+        Aucune catégorie de document trouvée.
+    </p>
+    {% endif %}
+</div>
 {% endblock %}
-

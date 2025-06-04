@@ -1,40 +1,88 @@
 {% extends 'base.html' %}
 {% block title %}Liste des documents{% endblock %}
 {% block content %}
-<h2>Liste des documents</h2>
-<a href="{% url 'add_document' %}" class="btn btn-ajouter">Ajouter un document</a>
-<table>
-    <thead>
-        <tr>
-            <th>Libellé</th>
-            <th>Référence</th>
-            <th>Type</th>
-            <th>Catégorie</th>
-            <th>Agent</th>
-            <th>Date d'expiration</th>
-            <th>Archivé</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for document in documents %}
-        <tr>
-            <td>{{ document.libelle }}</td>
-            <td>{{ document.reference }}</td>
-            <td>{{ document.get_type_display }}</td>
-            <td>{{ document.categorie_document }}</td>
-            <td>{{ document.agent }}</td>
-            <td>{{ document.date_expiration|date:'d/m/Y' }}</td>
-            <td>{% if document.is_archived %}Oui{% else %}Non{% endif %}</td>
-            <td>
-                <a href="{% url 'detail_document' document.id %}" class="btn btn-detail btn-sm">Détail</a> |
-                <a href="{% url 'update_document' document.id %}" class="btn btn-edit btn-sm">Modifier</a> |
-                <a href="{% url 'delete_document' document.id %}" class="btn btn-delete btn-sm">Supprimer</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="8">Aucun document trouvé.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %} 
+<div style="border:1px solid #e0e0e0; border-radius:8px; padding:20px; margin-bottom:20px; background:#fafbfc;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0;">Liste des documents</h2>
+        {% if can_create_documents %}
+        <a href="{% url 'add_document' %}" class="btn btn-primary btn-sm">Ajouter un document</a>
+        {% endif %}
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; border:1px solid #ddd;">Libellé</th>
+                <th style="padding:10px; border:1px solid #ddd;">Référence</th>
+                <th style="padding:10px; border:1px solid #ddd;">Type</th>
+                <th style="padding:10px; border:1px solid #ddd;">Catégorie</th>
+                <th style="padding:10px; border:1px solid #ddd;">Agent</th>
+                <th style="padding:10px; border:1px solid #ddd;">Date d'expiration</th>
+                <th style="padding:10px; border:1px solid #ddd;">Archivé</th>
+                <th style="padding:10px; border:1px solid #ddd;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+            <tr>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.libelle }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.reference }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.get_type_display }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.categorie_document }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.agent }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ document.date_expiration|date:'d/m/Y' }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{% if document.is_archived %}Oui{% else %}Non{% endif %}</td>
+                <td style="padding:8px; border:1px solid #eee;">
+                    {% if can_read_documents %}
+                    <a href="{% url 'detail_document' document.id %}" class="btn btn-primary btn-sm">Détail</a>
+                    {% endif %}
+                    {% if can_update_documents %}
+                    <a href="{% url 'update_document' document.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+                    {% endif %}
+                    {% if can_delete_documents %}
+                    <a href="{% url 'delete_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align:center; padding:10px; border:1px solid #eee;">Aucun document trouvé.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if documents.paginator.num_pages > 1 %}
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-4">
+          {% if documents.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">« Première</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ documents.previous_page_number }}">‹ Précédente</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">« Première</span></li>
+            <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+          {% endif %}
+      
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ documents.number }} sur {{ documents.paginator.num_pages }}</span>
+          </li>
+      
+          {% if documents.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ documents.next_page_number }}">Suivante ›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ documents.paginator.num_pages }}">Dernière »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+            <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+</div>
+{% endblock %}

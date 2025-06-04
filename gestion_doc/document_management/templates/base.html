@@ -90,28 +90,28 @@
         {% if request.user.is_authenticated %}
         <div class="sidebar">
             <h4>DASHBOARD</h4>
-            {% if afficher_delegations %}
-            <a href="{% url 'liste_delegations' %}" {% if request.resolver_match.url_name == 'liste_delegations' %} class="active"{% endif %}>🏢 Délégations</a>
-            {% endif %}
-            {% if afficher_structures %}
-            <a href="{% url 'liste_structures' %}" {% if request.resolver_match.url_name == 'liste_structures' %} class="active"{% endif %}>🏛️ Structures</a>
-            {% endif %}
-            {% if afficher_categories %}
-            <a href="{% url 'liste_CategorieDocuments' %}" {% if request.resolver_match.url_name == 'liste_CategorieDocuments' %} class="active"{% endif %}>📂 Catégories</a>
-            {% endif %}
-            {% if afficher_documents %}
-            <a href="{% url 'liste_documents' %}" {% if request.resolver_match.url_name == 'liste_documents' %} class="active"{% endif %}>📄 Documents</a>
-            {% endif %}
-            {% if afficher_agents %}
+            {% if can_read_agents %}
             <a href="{% url 'liste_agents' %}" {% if request.resolver_match.url_name == 'liste_agents' %} class="active"{% endif %}>👨‍💼 Agents</a>
             {% endif %}
-            {% if afficher_users %}
+            {% if can_read_users %}
             <a href="{% url 'liste_users' %}" {% if request.resolver_match.url_name == 'liste_users' %} class="active"{% endif %}>👤 Utilisateurs</a>
             {% endif %}
-            {% if afficher_permissions %}
+            {% if can_read_delegations %}
+            <a href="{% url 'liste_delegations' %}" {% if request.resolver_match.url_name == 'liste_delegations' %} class="active"{% endif %}>🏢 Délégations</a>
+            {% endif %}
+            {% if can_read_structures %}
+            <a href="{% url 'liste_structures' %}" {% if request.resolver_match.url_name == 'liste_structures' %} class="active"{% endif %}>🏛️ Structures</a>
+            {% endif %}
+            {% if can_read_categories %}
+            <a href="{% url 'liste_CategorieDocuments' %}" {% if request.resolver_match.url_name == 'liste_CategorieDocuments' %} class="active"{% endif %}>📂 Catégories</a>
+            {% endif %}
+            {% if can_read_documents %}
+            <a href="{% url 'liste_documents' %}" {% if request.resolver_match.url_name == 'liste_documents' %} class="active"{% endif %}>📄 Documents</a>
+            {% endif %}
+            {% if can_read_permissions %}
             <a href="{% url 'liste_permissions' %}" {% if request.resolver_match.url_name == 'liste_permissions' %} class="active"{% endif %}>🔐 Permissions</a>
             {% endif %}
-            {% if afficher_roles %}
+            {% if can_read_roles %}
             <a href="{% url 'liste_roles' %}" {% if request.resolver_match.url_name == 'liste_roles' %} class="active"{% endif %}>🔐 Rôles</a>
             {% endif %}
             {% if role_name == 'ADMIN' or role_name == 'GESTIONNAIRE' %}

@@ -8,17 +8,28 @@
     <p class="text-muted">Vue d'ensemble du système de gestion documentaire</p>
 </div>
 
+
+    <div class="row g-4">
+        <div class="col-md-12 mt-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">📄 Mes documents</h5>
+                    <p class="card-text display-6 mb-0">{{ nb_documents_agent|default:0 }}</p>
+                    <p class="card-text">Consultez tous vos documents personnels ici.</p>
+                    <a href="{% url 'liste_documents' %}" class="btn btn-primary">Voir mes documents</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% if not role_name == 'AGENT' %}
 <div class="row g-4">
+    {% if afficher_delegations %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-primary shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">🏢 Délégations</h5>
-                    {% if afficher_delegations %}
-                        <p class="card-text display-6 mb-0">{{ nb_delegations|default:0 }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_delegations|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-building fa-2x opacity-75"></i>
@@ -26,16 +37,14 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if afficher_structures %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-success shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">🏛️ Structures</h5>
-                    {% if afficher_structures %}
-                        <p class="card-text display-6 mb-0">{{ nb_structures|default:0 }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_structures|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-sitemap fa-2x opacity-75"></i>
@@ -43,16 +52,14 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if afficher_agents %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-info shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">👨‍💼 Agents</h5>
-                    {% if afficher_agents %}
-                        <p class="card-text display-6 mb-0">{{ nb_agents|default:0 }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_agents|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-users fa-2x opacity-75"></i>
@@ -60,18 +67,14 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if afficher_documents %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-warning shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">📄 Documents</h5>
-                    {% if afficher_documents %}
-                        <p class="card-text display-6 mb-0">{{ nb_documents|default:0 }}</p>
-                    {% elif nb_documents_agent is not None %}
-                        <p class="card-text display-6 mb-0">{{ nb_documents_agent }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_documents|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-file-alt fa-2x opacity-75"></i>
@@ -79,16 +82,14 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if afficher_roles %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-dark shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">🔐 Rôles</h5>
-                    {% if afficher_roles %}
-                        <p class="card-text display-6 mb-0">{{ nb_roles|default:0 }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_roles|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-key fa-2x opacity-75"></i>
@@ -96,30 +97,18 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if afficher_categories %}
     <div class="col-md-4 col-sm-6">
         <div class="card text-white bg-secondary shadow-sm h-100">
             <div class="card-body d-flex align-items-center">
                 <div class="flex-grow-1">
                     <h5 class="card-title mb-1">📂 Catégories</h5>
-                    {% if afficher_categories %}
-                        <p class="card-text display-6 mb-0">{{ nb_categories|default:0 }}</p>
-                    {% else %}
-                        <p class="card-text text-muted">Non autorisé</p>
-                    {% endif %}
+                    <p class="card-text display-6 mb-0">{{ nb_categories|default:0 }}</p>
                 </div>
                 <div class="ms-3">
                     <i class="fas fa-folder fa-2x opacity-75"></i>
                 </div>
-            </div>
-        </div>
-    </div>
-    {% if role_name == 'AGENT' %}
-    <div class="col-md-12 mt-4">
-        <div class="card border-primary">
-            <div class="card-body text-center">
-                <h5 class="card-title">📄 Mes documents</h5>
-                <p class="card-text">Consultez tous vos documents personnels ici.</p>
-                <a href="{% url 'liste_documents' %}" class="btn btn-primary">Voir mes documents</a>
             </div>
         </div>
     </div>
@@ -160,4 +149,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

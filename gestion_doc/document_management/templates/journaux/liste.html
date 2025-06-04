@@ -1,35 +1,82 @@
 {% extends 'base.html' %}
+
 {% block title %}Journaux d'événements{% endblock %}
+
 {% block content %}
-<h2>Journaux d'événements</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Utilisateur</th>
-            <th>Action</th>
-            <th>Modèle</th>
-            <th>ID Objet</th>
-            <th>Détails</th>
-            <th>IP</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for journal in journaux %}
-        <tr>
-            <td>{{ journal.timestamp|date:'d/m/Y H:i' }}</td>
-            <td>{{ journal.user }}</td>
-            <td>{{ journal.get_action_display }}</td>
-            <td>{{ journal.model_name }}</td>
-            <td>{{ journal.object_id }}</td>
-            <td>{{ journal.details|truncatechars:40 }}</td>
-            <td>{{ journal.ip_address }}</td>
-            <td><a href="{% url 'detail_journal' journal.id %}" class="btn btn-sm btn-info">Détail</a></td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="8">Aucun événement journalisé.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %} 
+<div style="border:1px solid #e0e0e0; border-radius:8px; padding:20px; background:#fafbfc;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0;">Journaux d'événements</h2>
+    </div>
+
+    {% if journaux %}
+    <table style="width:100%; border-collapse:collapse;" class="table table-striped">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; border:1px solid #ddd;">Date</th>
+                <th style="padding:10px; border:1px solid #ddd;">Utilisateur</th>
+                <th style="padding:10px; border:1px solid #ddd;">Action</th>
+                <th style="padding:10px; border:1px solid #ddd;">Modèle</th>
+                <th style="padding:10px; border:1px solid #ddd;">ID Objet</th>
+                <th style="padding:10px; border:1px solid #ddd;">Détails</th>
+                <th style="padding:10px; border:1px solid #ddd;">IP</th>
+                <th style="padding:10px; border:1px solid #ddd;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for journal in journaux %}
+            <tr>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.timestamp|date:'d/m/Y H:i' }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.user }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.get_action_display }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.model_name }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.object_id }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.details|truncatechars:40 }}</td>
+                <td style="padding:8px; border:1px solid #eee;">{{ journal.ip_address }}</td>
+                <td style="padding:8px; border:1px solid #eee;">
+                    <a href="{% url 'detail_journal' journal.id %}" class="btn btn-sm btn-primary">Détail</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if journaux.paginator.num_pages > 1 %}
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-4">
+          {% if journaux.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">« Première</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ journaux.previous_page_number }}">‹ Précédente</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">« Première</span></li>
+            <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
+          {% endif %}
+      
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ journaux.number }} sur {{ journaux.paginator.num_pages }}</span>
+          </li>
+      
+          {% if journaux.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ journaux.next_page_number }}">Suivante ›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ journaux.paginator.num_pages }}">Dernière »</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
+            <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      
+    {% else %}
+    <p style="text-align:center; padding:20px; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px;">
+        Aucun événement journalisé.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}
