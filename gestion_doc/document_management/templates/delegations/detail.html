@@ -1,10 +1,35 @@
-<!-- templates/structure/detail.html -->
 {% extends 'base.html' %}
+{% block title %}Détails Délégation{% endblock %}
+
 {% block content %}
-<h2>Détails de la delegation</h2>
-<p><strong>Nom :</strong> {{ delegation.nom }}</p>
-<p><strong>localisation :</strong> {{ delegation.localisation }}</p>
-<p><strong>Description :</strong> {{ delegation.description }}</p>
-<a href="{% url 'update_delegation' delegation.id %}">Modifier</a>
-<a href="{% url 'delete_delegation' delegation.id %}">Supprimer</a>
+<div class="container">
+    <div class="mb-4">
+        <a href="{% url 'liste_delegations' %}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">🏢 Détails de la Délégation</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Nom :</strong></div>
+                <div class="col-md-8">{{ delegation.nom_delegation }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Localisation :</strong></div>
+                <div class="col-md-8">{{ delegation.localisation }}</div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-4"><strong>Description :</strong></div>
+                <div class="col-md-8">{{ delegation.description }}</div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'update_delegation' delegation.id %}" class="btn btn-outline-primary me-2">✏️ Modifier</a>
+                <a href="{% url 'delete_delegation' delegation.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

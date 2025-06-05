@@ -1,22 +1,45 @@
 {% extends 'base.html' %}
+{% block title %}Détails Catégorie Document{% endblock %}
+
 {% block content %}
-<h2>Détails de la Catégorie de Document</h2>
+<div class="container">
+    <div class="mb-4">
+        <a href="{% url 'liste_CategorieDocuments' %}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
 
-<p><strong>Libellé :</strong> {{ categorieDocument.libelle }}</p>
-<p><strong>Description :</strong> {{ categorieDocument.description }}</p>
-<p><strong>Type d'accès :</strong> 
-    {% if categorieDocument.type_acces == "PRIVATE" %}
-        Privé
-    {% elif categorieDocument.type_acces == "PUBLIC" %}
-        Public
-    {% elif categorieDocument.type_acces == "RESTRICTED" %}
-        Restreint
-    {% else %}
-        <em>Non spécifié</em>
-    {% endif %}
-</p>
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-info text-white">
+            <h4 class="mb-0">📁 Détails de la Catégorie de Document</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Libellé :</strong></div>
+                <div class="col-md-8">{{ categorieDocument.libelle }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Description :</strong></div>
+                <div class="col-md-8">{{ categorieDocument.description }}</div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-4"><strong>Type d'accès :</strong></div>
+                <div class="col-md-8">
+                    {% if categorieDocument.type_acces == "PRIVATE" %}
+                        <span class="badge bg-danger">Privé</span>
+                    {% elif categorieDocument.type_acces == "PUBLIC" %}
+                        <span class="badge bg-success">Public</span>
+                    {% elif categorieDocument.type_acces == "RESTRICTED" %}
+                        <span class="badge bg-warning text-dark">Restreint</span>
+                    {% else %}
+                        <em>Non spécifié</em>
+                    {% endif %}
+                </div>
+            </div>
 
-<a href="{% url 'update_categorieDocument' categorieDocument.id %}">Modifier</a>
-<a href="{% url 'delete_categorieDocument' categorieDocument.id %}">Supprimer</a>
-
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'update_categorieDocument' categorieDocument.id %}" class="btn btn-outline-primary me-2">✏️ Modifier</a>
+                <a href="{% url 'delete_categorieDocument' categorieDocument.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

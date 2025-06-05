@@ -1,17 +1,41 @@
-<!-- templates/structure/detail.html -->
 {% extends 'base.html' %}
-{% block content %}
-<h2>Détails de la Structure</h2>
-<p><strong>Nom :</strong> {{ structure.nom }}</p>
-<p><strong>Description :</strong> {{ structure.description }}</p>
-<p><strong>Délégation :</strong> 
-    {% if structure.delegation %}
-        {{ structure.delegation.nom_delegation}} 
-    {% else %}
-        Aucune délégation
-    {% endif %}
-</p>
+{% block title %}Détails Structure{% endblock %}
 
-<a href="{% url 'update_structure' structure.id %}">Modifier</a>
-<a href="{% url 'delete_structure' structure.id %}">Supprimer</a>
+{% block content %}
+<div class="container">
+    <div class="mb-4">
+        <a href="{% url 'liste_structures' %}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">🏢 Détails de la Structure</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Nom :</strong></div>
+                <div class="col-md-8">{{ structure.nom }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Description :</strong></div>
+                <div class="col-md-8">{{ structure.description }}</div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-4"><strong>Délégation :</strong></div>
+                <div class="col-md-8">
+                    {% if structure.delegation %}
+                        {{ structure.delegation.nom_delegation }}
+                    {% else %}
+                        <span class="text-muted">Aucune délégation</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'update_structure' structure.id %}" class="btn btn-outline-primary me-2">✏️ Modifier</a>
+                <a href="{% url 'delete_structure' structure.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,40 +1,80 @@
 {% extends 'base.html' %}
 {% block title %}Formulaire Agent{% endblock %}
 {% block content %}
-<h2>{% if agent %}Modifier{% else %}Ajouter{% endif %} un agent</h2>
-{% if messages %}
-    {% for message in messages %}
-        <div {% if message.tags == 'error' %}style="color:red;"{% elif message.tags == 'success' %}style="color:green;"{% endif %}>{{ message }}</div>
-    {% endfor %}
-{% endif %}
-<form method="post">
-    {% csrf_token %}
-    <label>Matricule :</label>
-    <input type="text" name="matricule" value="{{ agent.matricule|default:'' }}" required><br>
-    <label>Prénom :</label>
-    <input type="text" name="prenom" value="{{ agent.prenom|default:'' }}" required><br>
-    <label>Nom :</label>
-    <input type="text" name="nom" value="{{ agent.nom|default:'' }}" required><br>
-    <label>Date de naissance :</label>
-    <input type="date" name="date_naissance" value="{{ agent.date_naissance|date:'Y-m-d'|default:'' }}" required><br>
-    <label>Lieu de naissance :</label>
-    <input type="text" name="lieu_naissance" value="{{ agent.lieu_naissance|default:'' }}" required><br>
-    <label>Adresse :</label>
-    <input type="text" name="adresse" value="{{ agent.adresse|default:'' }}" required><br>
-    <label>Email :</label>
-    <input type="email" name="email" value="{{ agent.email|default:'' }}" required><br>
-    <label>Téléphone :</label>
-    <input type="text" name="telephone" value="{{ agent.telephone|default:'' }}" required><br>
-    <label>Structure :</label>
-    <select name="structure" required>
-        <option value="">---------</option>
-        {% for structure in structures %}
-            <option value="{{ structure.id }}" {% if agent and agent.structure.id == structure.id %}selected{% endif %}>{{ structure.nom }}</option>
-        {% endfor %}
-    </select><br>
-    <label>Actif :</label>
-    <input type="checkbox" name="is_active" {% if agent and agent.is_active %}checked{% endif %}><br>
-    <button type="submit" class="btn btn-success">Enregistrer</button>
-    <a href="{% url 'liste_agents' %}" class="btn btn-secondary">Annuler</a>
-</form>
-{% endblock %} 
+<div class="form-container">
+    <h2 class="form-title">{% if agent %}Modifier{% else %}Ajouter{% endif %} un agent</h2>
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'error' %}message-error{% elif message.tags == 'success' %}message-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form method="post" class="agent-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="matricule">Matricule :</label>
+            <input type="text" id="matricule" name="matricule" value="{{ agent.matricule|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prenom">Prénom :</label>
+            <input type="text" id="prenom" name="prenom" value="{{ agent.prenom|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" value="{{ agent.nom|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_naissance">Date de naissance :</label>
+            <input type="date" id="date_naissance" name="date_naissance" value="{{ agent.date_naissance|date:'Y-m-d'|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="lieu_naissance">Lieu de naissance :</label>
+            <input type="text" id="lieu_naissance" name="lieu_naissance" value="{{ agent.lieu_naissance|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="adresse">Adresse :</label>
+            <input type="text" id="adresse" name="adresse" value="{{ agent.adresse|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" value="{{ agent.email|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="telephone">Téléphone :</label>
+            <input type="text" id="telephone" name="telephone" value="{{ agent.telephone|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="structure">Structure :</label>
+            <select id="structure" name="structure" required>
+                <option value="">---------</option>
+                {% for structure in structures %}
+                    <option value="{{ structure.id }}" {% if agent and agent.structure.id == structure.id %}selected{% endif %}>{{ structure.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group checkbox-group">
+            <label for="is_active">Actif :</label>
+            <input type="checkbox" id="is_active" name="is_active" {% if agent and agent.is_active %}checked{% endif %}>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+            <a href="{% url 'liste_agents' %}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

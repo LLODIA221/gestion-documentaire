@@ -1,22 +1,75 @@
 {% extends 'base.html' %}
 {% block title %}Détail Agent{% endblock %}
+
 {% block content %}
-<h2>Détail de l'agent</h2>
-<ul>
-    <li><strong>Matricule :</strong> {{ agent.matricule }}</li>
-    <li><strong>Nom :</strong> {{ agent.nom }}</li>
-    <li><strong>Prénom :</strong> {{ agent.prenom }}</li>
-    <li><strong>Date de naissance :</strong> {{ agent.date_naissance }}</li>
-    <li><strong>Lieu de naissance :</strong> {{ agent.lieu_naissance }}</li>
-    <li><strong>Adresse :</strong> {{ agent.adresse }}</li>
-    <li><strong>Email :</strong> {{ agent.email }}</li>
-    <li><strong>Téléphone :</strong> {{ agent.telephone }}</li>
-    <li><strong>Utilisateur :</strong> {% if agent.user %}{{ agent.user.username }}{% else %}<em>Non associé</em>{% endif %}</li>
-    <li><strong>Structure :</strong> {{ agent.structure.nom }}</li>
-    <li><strong>Rôle :</strong> {{ agent.role.libelle }}</li>
-    <li><strong>Actif :</strong> {% if agent.is_active %}Oui{% else %}Non{% endif %}</li>
-</ul>
-<a href="{% url 'update_agent' agent.id %}">Modifier</a> |
-<a href="{% url 'delete_agent' agent.id %}">Supprimer</a> |
-<a href="{% url 'liste_agents' %}">Retour à la liste</a>
-{% endblock %} 
+<div class="container my-4">
+    <div class="mb-3">
+        <a href="{% url 'liste_agents' %}" class="btn btn-secondary">
+            ← Retour à la liste
+        </a>
+    </div>
+
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">👤 Détail de l'agent</h4>
+        </div>
+        <div class="card-body">
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <p><strong>Matricule :</strong> {{ agent.matricule }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Nom :</strong> {{ agent.nom }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Prénom :</strong> {{ agent.prenom }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Date de naissance :</strong> {{ agent.date_naissance }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Lieu de naissance :</strong> {{ agent.lieu_naissance }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Adresse :</strong> {{ agent.adresse }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Email :</strong> {{ agent.email }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Téléphone :</strong> {{ agent.telephone }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Utilisateur :</strong>
+                        {% if agent.user %}
+                            {{ agent.user.username }}
+                        {% else %}
+                            <em class="text-muted">Non associé</em>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Structure :</strong> {{ agent.structure.nom }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Rôle :</strong> {{ agent.role.libelle }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Actif :</strong>
+                        {% if agent.is_active %}
+                            <span class="badge bg-success">Oui</span>
+                        {% else %}
+                            <span class="badge bg-danger">Non</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex flex-wrap gap-2">
+                <a href="{% url 'update_agent' agent.id %}" class="btn btn-outline-primary">✏️ Modifier</a>
+                <a href="{% url 'delete_agent' agent.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
