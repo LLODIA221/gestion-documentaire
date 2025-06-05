@@ -29,9 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    '192.168.1.8',
-    '192.168.137.10',
-    '192.168.1.5',
+   'localhost', '127.0.0.1', 'your-domain.com'
 ]
 
 
@@ -125,7 +123,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/app/staticfiles/'
 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/app/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
