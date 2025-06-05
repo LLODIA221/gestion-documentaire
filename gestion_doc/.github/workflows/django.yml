@@ -28,7 +28,7 @@ jobs:
           python manage.py migrate
           python manage.py test
 
-  build-and-push:
+  build-and-push-to-dockerhub:
     needs: build-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
