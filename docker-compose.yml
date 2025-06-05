@@ -1,17 +1,20 @@
-#version: '3.8'
+version: '3.8'
 
 services:
-  web:
-    build: .
+  django-app:
+    image: llodia221/gestion-doc:latest  # Image Docker Hub déjà buildée via GitHub Actions
     container_name: django_app
-    volumes:
-      - ./gestion_doc:/app/gestion_doc
     ports:
       - "8000:8000"
+    volumes:
+      - ./gestion_doc:/app/gestion_doc  # Pour voir les fichiers dans ton host (optionnel)
     depends_on:
       - sqliteweb
     environment:
       - PYTHONUNBUFFERED=1
+    restart: always
+    networks:
+      - gestion-doc-network
 
   sqliteweb:
     image: tomdesinto/sqliteweb
@@ -21,4 +24,10 @@ services:
       - ./gestion_doc/db.sqlite3:/db/db.sqlite3
     ports:
       - "8080:8080"
-    restart: unless-stopped 
+    restart: unless-stopped
+    networks:
+      - gestion-doc-network
+
+networks:
+  gestion-doc-network:
+    driver: bridge
