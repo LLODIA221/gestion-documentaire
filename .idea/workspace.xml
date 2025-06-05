@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="945b20f9-2329-42c5-8ea2-898f92e887b9" name="Changes" comment="second commit,refactorisation des poins cles ,dashboard,templates ect...">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/context_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/agents/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/agents/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/categoriedocuments/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/categoriedocuments/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/delegations/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/delegations/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/documents/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/documents/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/journaux/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/journaux/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/permissions/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/permissions/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/structures/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/structures/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/liste.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/gestion_doc/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/gestion_doc/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="945b20f9-2329-42c5-8ea2-898f92e887b9" name="Changes" comment="adaptation du dashboard selon le role , adding more features" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,11 +57,20 @@
       <option name="project" value="LOCAL" />
       <updated>1748868701809</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="adaptation du dashboard selon le role , adding more features">
+      <option name="closed" value="true" />
+      <created>1749073732602</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749073732602</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="second commit,refactorisation des poins cles ,dashboard,templates ect..." />
-    <option name="LAST_COMMIT_MESSAGE" value="second commit,refactorisation des poins cles ,dashboard,templates ect..." />
+    <MESSAGE value="adaptation du dashboard selon le role , adding more features" />
+    <option name="LAST_COMMIT_MESSAGE" value="adaptation du dashboard selon le role , adding more features" />
   </component>
 </project>

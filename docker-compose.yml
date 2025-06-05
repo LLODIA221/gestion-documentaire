@@ -1,0 +1,24 @@
+#version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: django_app
+    volumes:
+      - ./gestion_doc:/app/gestion_doc
+    ports:
+      - "8000:8000"
+    depends_on:
+      - sqliteweb
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  sqliteweb:
+    image: tomdesinto/sqliteweb
+    container_name: sqlite_explorer
+    command: db.sqlite3
+    volumes:
+      - ./gestion_doc/db.sqlite3:/db/db.sqlite3
+    ports:
+      - "8080:8080"
+    restart: unless-stopped 
