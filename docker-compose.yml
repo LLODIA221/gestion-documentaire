@@ -2,38 +2,16 @@ version: '3.8'
 
 services:
   django-app:
-    image: llodia221/gestion-doc:latest
+    image: llodia221/gestion-doc:latest  # Image Docker Hub déjà buildée via GitHub Actions
     container_name: django_app
-    # Ne plus exposer le port 8000 directement (seulement via nginx)
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     volumes:
-      - db_data:/app/gestion_doc
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - ./gestion_doc:/app/gestion_doc  # Pour voir les fichiers dans ton host (optionnel)
+    depends_on:
+      - sqliteweb
     environment:
       - PYTHONUNBUFFERED=1
-    restart: always
-    networks:
-      - gestion-doc-network
-    command: >
-      sh -c "cd /app/gestion_doc &&
-             python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx_proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    depends_on:
-      - django-app
     restart: always
     networks:
       - gestion-doc-network
@@ -41,21 +19,14 @@ services:
   sqliteweb:
     image: tomdesinto/sqliteweb
     container_name: sqlite_explorer
-    command: db.sqlite3
+    command: /db/db.sqlite3
     volumes:
-      - db_data:/db
+      - ./gestion_doc/db.sqlite3:/db/db.sqlite3
     ports:
       - "8080:8080"
     restart: unless-stopped
     networks:
       - gestion-doc-network
-    depends_on:
-      - django-app
-
-volumes:
-  db_data:
-  static_volume:
-  media_volume:
 
 networks:
   gestion-doc-network:

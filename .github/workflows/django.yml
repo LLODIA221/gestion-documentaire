@@ -26,7 +26,6 @@ jobs:
         working-directory: ./gestion_doc
         run: |
           python manage.py migrate
-          python manage.py collectstatic --noinput
           python manage.py test
 
   build-and-push:
@@ -50,34 +49,3 @@ jobs:
           context: .
           push: true
           tags: llodia221/gestion-doc:latest
-
-  # Optionnel : Test de déploiement complet avec Nginx
-  integration-test:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create nginx config
-        run: |
-          mkdir -p nginx
-          echo 'upstream django {
-              server django-app:8000;
-          }
-          server {
-              listen 80;
-              location / {
-                  proxy_pass http://django;
-                  proxy_set_header Host $host;
-              }
-          }' > nginx.conf
-
-      - name: Test deployment with docker-compose
-        run: |
-          docker-compose up -d
-          sleep 30
-          curl -f http://localhost || exit 1
-          docker-compose down
