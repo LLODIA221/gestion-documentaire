@@ -14,60 +14,73 @@
             <h4 class="mb-0">👤 Détail de l'agent</h4>
         </div>
         <div class="card-body">
-            <div class="row gy-3">
-                <div class="col-md-6">
-                    <p><strong>Matricule :</strong> {{ agent.matricule }}</p>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    {% if agent.photo %}
+                        <img src="{{ agent.photo.url }}" alt="Photo de {{ agent.get_full_name }}" class="img-fluid rounded" style="max-width: 200px;">
+                    {% else %}
+                        <div class="no-photo-placeholder bg-light rounded d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; margin: 0 auto;">
+                            <i class="fas fa-user fa-4x text-muted"></i>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="col-md-6">
-                    <p><strong>Nom :</strong> {{ agent.nom }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Prénom :</strong> {{ agent.prenom }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Date de naissance :</strong> {{ agent.date_naissance }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Lieu de naissance :</strong> {{ agent.lieu_naissance }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Adresse :</strong> {{ agent.adresse }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Email :</strong> {{ agent.email }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Téléphone :</strong> {{ agent.telephone }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Utilisateur :</strong>
-                        {% if agent.user %}
-                            {{ agent.user.username }}
-                        {% else %}
-                            <em class="text-muted">Non associé</em>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Structure :</strong> {{ agent.structure.nom }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Rôle :</strong> {{ agent.role.libelle }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Actif :</strong>
-                        {% if agent.is_active %}
-                            <span class="badge bg-success">Oui</span>
-                        {% else %}
-                            <span class="badge bg-danger">Non</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+                <div class="col-md-8">
+                    <div class="row gy-3">
+                        <div class="col-md-6">
+                            <p><strong>Matricule :</strong> {{ agent.matricule }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Nom :</strong> {{ agent.nom }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Prénom :</strong> {{ agent.prenom }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Date de naissance :</strong> {{ agent.date_naissance }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Lieu de naissance :</strong> {{ agent.lieu_naissance }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Adresse :</strong> {{ agent.adresse }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email :</strong> {{ agent.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Téléphone :</strong> {{ agent.telephone }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Utilisateur :</strong>
+                                {% if agent.user %}
+                                    {{ agent.user.username }}
+                                {% else %}
+                                    <em class="text-muted">Non associé</em>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Structure :</strong> {{ agent.structure.nom }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Rôle :</strong> {{ agent.role.libelle }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Actif :</strong>
+                                {% if agent.is_active %}
+                                    <span class="badge bg-success">Oui</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Non</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
 
-            <div class="mt-4 d-flex flex-wrap gap-2">
-                <a href="{% url 'update_agent' agent.id %}" class="btn btn-outline-primary">✏️ Modifier</a>
-                <a href="{% url 'delete_agent' agent.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+                    <div class="mt-4 d-flex flex-wrap gap-2">
+                        <a href="{% url 'update_agent' agent.id %}" class="btn btn-outline-primary">✏️ Modifier</a>
+                        <a href="{% url 'delete_agent' agent.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

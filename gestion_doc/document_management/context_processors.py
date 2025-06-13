@@ -23,7 +23,7 @@ def permissions_context(request):
         pass  # Aucun accès
 
     # Pour l'agent, nombre de documents propres
-    nb_documents_agent = Document.objects.filter(agent=agent).count() if agent and role_name == 'AGENT' else None
+    nb_documents_agent = Document.objects.filter(agent=agent).count() #if agent and role_name == 'AGENT' else None
 
     # Compteurs globaux pour chaque entité
     nb_delegations = Delegation.objects.count()

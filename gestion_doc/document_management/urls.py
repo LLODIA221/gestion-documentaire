@@ -67,4 +67,6 @@ urlpatterns = [
 
     path('journaux/', liste_journaux, name='liste_journaux'),
     path('journaux/<int:journal_id>/', detail_journal, name='detail_journal'),
+
+    path('profile/', profile, name='profile'),
 ]

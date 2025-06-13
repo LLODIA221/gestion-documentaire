@@ -1,6 +1,6 @@
 from django.contrib import messages 
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import CategorieDocument, Delegation, Permission, Role, Structure, Agent, Document, DocumentVersion, Journal
+from .models import CategorieDocument, Delegation, Permission, Role, Structure, Agent, Document, DocumentVersion, Journal, Demande
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import random
@@ -77,15 +77,25 @@ def add_structure(request):
         description = request.POST.get('description')
         delegation_id = request.POST.get('delegation')
         delegation = Delegation.objects.get(id=delegation_id) if delegation_id else None
-        structure = Structure.objects.create(
-            nom=nom,
-            description=description,
-            delegation=delegation
-        )
-        log_event(request.user, 'CREATE', 'Structure', structure.id, details=f"Ajout de la structure {nom}")
-        return redirect('liste_structures')
+        
+        try:
+            structure = Structure.objects.create(
+                nom=nom,
+                description=description,
+                delegation=delegation
+            )
+            log_event(request.user, 'CREATE', 'Structure', structure.id, details=f"Ajout de la structure {nom}")
+            messages.success(request, 'Structure ajoutée avec succès')
+            return redirect('liste_structures')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la création de la structure. Vérifiez que le nom n\'existe pas déjà.')
+            return render(request, 'structures/form.html', {
+                'delegations': delegations,
+                'nom': nom,
+                'description': description,
+                'delegation_id': delegation_id
+            })
     return render(request, 'structures/form.html', {
-        'message': 'Structure ajoutée avec succès',
         'delegations': delegations
     })
 
@@ -95,13 +105,21 @@ def update_structure(request, structure_id):
     delegations = Delegation.objects.all()
     if request.method == 'POST':
         old_nom = structure.nom
-        structure.nom = request.POST.get('nom')
-        structure.description = request.POST.get('description')
-        delegation_id = request.POST.get('delegation')
-        structure.delegation = Delegation.objects.get(id=delegation_id) if delegation_id else None
-        structure.save()
-        log_event(request.user, 'UPDATE', 'Structure', structure.id, details=f"Modification de la structure {old_nom} -> {structure.nom}")
-        return redirect('liste_structures')
+        try:
+            structure.nom = request.POST.get('nom')
+            structure.description = request.POST.get('description')
+            delegation_id = request.POST.get('delegation')
+            structure.delegation = Delegation.objects.get(id=delegation_id) if delegation_id else None
+            structure.save()
+            log_event(request.user, 'UPDATE', 'Structure', structure.id, details=f"Modification de la structure {old_nom} -> {structure.nom}")
+            messages.success(request, 'Structure modifiée avec succès')
+            return redirect('liste_structures')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la modification de la structure. Vérifiez que le nom n\'existe pas déjà.')
+            return render(request, 'structures/form.html', {
+                'structure': structure,
+                'delegations': delegations
+            })
     return render(request, 'structures/form.html', {
         'structure': structure,
         'delegations': delegations
@@ -139,25 +157,43 @@ def add_delegation(request):
         nom_delegation = request.POST.get('nom_delegation')
         localisation = request.POST.get('localisation')
         description = request.POST.get('description')
-        delegation = Delegation.objects.create(
-            nom_delegation=nom_delegation,
-            localisation=localisation,
-            description=description )
-        log_event(request.user, 'CREATE', 'Delegation', delegation.id, details=f"Ajout de la délégation {nom_delegation}")
-        return redirect('liste_delegations')
-    return render(request, 'delegations/form.html', {'message': 'Delegation ajoutée avec succès'})
+        
+        try:
+            delegation = Delegation.objects.create(
+                nom_delegation=nom_delegation,
+                localisation=localisation,
+                description=description
+            )
+            log_event(request.user, 'CREATE', 'Delegation', delegation.id, details=f"Ajout de la délégation {nom_delegation}")
+            messages.success(request, 'Délégation ajoutée avec succès')
+            return redirect('liste_delegations')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la création de la délégation. Vérifiez que le nom n\'existe pas déjà.')
+            return render(request, 'delegations/form.html', {
+                'nom_delegation': nom_delegation,
+                'localisation': localisation,
+                'description': description
+            })
+    return render(request, 'delegations/form.html')
 
 @login_required
 def update_delegation(request, delegation_id):
     delegation = Delegation.objects.get(id=delegation_id)
     if request.method == 'POST':
         old_nom = delegation.nom_delegation
-        delegation.nom_delegation = request.POST.get('nom_delegation')
-        delegation.localisation = request.POST.get('localisation')
-        delegation.description = request.POST.get('description')
-        delegation.save()
-        log_event(request.user, 'UPDATE', 'Delegation', delegation.id, details=f"Modification de la délégation {old_nom} -> {delegation.nom_delegation}")
-        return redirect('liste_delegations')
+        try:
+            delegation.nom_delegation = request.POST.get('nom_delegation')
+            delegation.localisation = request.POST.get('localisation')
+            delegation.description = request.POST.get('description')
+            delegation.save()
+            log_event(request.user, 'UPDATE', 'Delegation', delegation.id, details=f"Modification de la délégation {old_nom} -> {delegation.nom_delegation}")
+            messages.success(request, 'Délégation modifiée avec succès')
+            return redirect('liste_delegations')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la modification de la délégation. Vérifiez que le nom n\'existe pas déjà.')
+            return render(request, 'delegations/form.html', {
+                'delegation': delegation
+            })
     return render(request, 'delegations/form.html', {'delegation': delegation})
 
 def delete_delegation(request, delegation_id):
@@ -194,13 +230,24 @@ def add_categorieDocument(request):
         libelle = request.POST.get('libelle')
         type_acces = request.POST.get('type_acces')
         description = request.POST.get('description')
-        categorie = CategorieDocument.objects.create(
-            libelle=libelle,
-            type_acces=type_acces,
-            description=description
-        )
-        log_event(request.user, 'CREATE', 'CategorieDocument', categorie.id, details=f"Ajout de la catégorie {libelle}")
-        return redirect('liste_CategorieDocuments')
+        
+        try:
+            categorie = CategorieDocument.objects.create(
+                libelle=libelle,
+                type_acces=type_acces,
+                description=description
+            )
+            log_event(request.user, 'CREATE', 'CategorieDocument', categorie.id, details=f"Ajout de la catégorie {libelle}")
+            messages.success(request, 'Catégorie ajoutée avec succès')
+            return redirect('liste_CategorieDocuments')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la création de la catégorie. Vérifiez que le libellé n\'existe pas déjà.')
+            return render(request, 'CategorieDocuments/form.html', {
+                'type_acces_choices': type_acces_choices,
+                'libelle': libelle,
+                'type_acces': type_acces,
+                'description': description
+            })
     return render(request, 'CategorieDocuments/form.html', {
         'type_acces_choices': type_acces_choices
     })
@@ -211,12 +258,20 @@ def update_categorieDocument(request, categorieDocument_id):
     type_acces_choices = dict(CategorieDocument.TYPE_ACCES_CHOICES)
     if request.method == 'POST':
         old_libelle = categorieDocument.libelle
-        categorieDocument.libelle = request.POST.get('libelle')
-        categorieDocument.type_acces = request.POST.get('type_acces')
-        categorieDocument.description = request.POST.get('description')
-        categorieDocument.save()
-        log_event(request.user, 'UPDATE', 'CategorieDocument', categorieDocument.id, details=f"Modification de la catégorie {old_libelle} -> {categorieDocument.libelle}")
-        return redirect('liste_CategorieDocuments')
+        try:
+            categorieDocument.libelle = request.POST.get('libelle')
+            categorieDocument.type_acces = request.POST.get('type_acces')
+            categorieDocument.description = request.POST.get('description')
+            categorieDocument.save()
+            log_event(request.user, 'UPDATE', 'CategorieDocument', categorieDocument.id, details=f"Modification de la catégorie {old_libelle} -> {categorieDocument.libelle}")
+            messages.success(request, 'Catégorie modifiée avec succès')
+            return redirect('liste_CategorieDocuments')
+        except Exception as e:
+            messages.error(request, 'Une erreur est survenue lors de la modification de la catégorie. Vérifiez que le libellé n\'existe pas déjà.')
+            return render(request, 'CategorieDocuments/form.html', {
+                'categorieDocument': categorieDocument,
+                'type_acces_choices': type_acces_choices
+            })
     return render(request, 'CategorieDocuments/form.html', {
         'categorieDocument': categorieDocument,
         'type_acces_choices': type_acces_choices
@@ -432,6 +487,7 @@ def liste_agents(request):
 @login_required
 def add_agent(request):
     structures = Structure.objects.all()
+    roles = Role.objects.all()
     if request.method == 'POST':
         matricule = request.POST.get('matricule')
         prenom = request.POST.get('prenom')
@@ -442,7 +498,10 @@ def add_agent(request):
         email = request.POST.get('email')
         telephone = request.POST.get('telephone')
         structure_id = request.POST.get('structure')
+        role_id = request.POST.get('role')
         is_active = request.POST.get('is_active') == 'on'
+        photo = request.FILES.get('photo')
+        
         if Agent.objects.filter(matricule=matricule).exists():
             messages.error(request, "Ce matricule est déjà utilisé.")
         elif Agent.objects.filter(email=email).exists():
@@ -459,7 +518,7 @@ def add_agent(request):
                     first_name=prenom,
                     last_name=nom
                 )
-                role = Role.objects.get(libelle='AGENT')
+                role = Role.objects.get(id=role_id)
                 agent = Agent.objects.create(
                     matricule=matricule,
                     prenom=prenom,
@@ -472,7 +531,8 @@ def add_agent(request):
                     user=user,
                     structure=Structure.objects.get(id=structure_id),
                     role=role,
-                    is_active=is_active
+                    is_active=is_active,
+                    photo=photo
                 )
                 log_event(request.user, 'CREATE', 'Agent', agent.id, details=f"Ajout de l'agent {prenom} {nom}")
                 messages.success(request, f"Agent ajouté avec succès. Identifiant : {user.username} | Mot de passe : {password}")
@@ -480,7 +540,8 @@ def add_agent(request):
             except Exception as e:
                 messages.error(request, f"Erreur lors de l'ajout de l'agent : {e}")
     return render(request, 'agents/form.html', {
-        'structures': structures
+        'structures': structures,
+        'roles': roles
     })
 
 @login_required
@@ -501,6 +562,14 @@ def update_agent(request, agent_id):
         structure_id = request.POST.get('structure')
         role_id = request.POST.get('role')
         agent.is_active = request.POST.get('is_active') == 'on'
+        
+        # Gestion de la photo
+        if 'photo' in request.FILES:
+            # Supprimer l'ancienne photo si elle existe
+            if agent.photo:
+                agent.photo.delete()
+            agent.photo = request.FILES['photo']
+            
         try:
             agent.structure = Structure.objects.get(id=structure_id)
             agent.role = Role.objects.get(id=role_id)
@@ -740,3 +809,17 @@ def liste_journaux(request):
 def detail_journal(request, journal_id):
     journal = get_object_or_404(Journal, id=journal_id)
     return render(request, 'journaux/detail.html', {'journal': journal})
+
+@login_required
+def profile(request):
+    """
+    Vue pour afficher le profil de l'utilisateur connecté
+    """
+    agent = request.user.agent_profile
+    nb_documents_agent = Document.objects.filter(agent=agent).count()
+    nb_demandes_agent = Demande.objects.filter(demandeur=request.user).count()
+    
+    return render(request, 'profile.html', {
+        'nb_documents_agent': nb_documents_agent,
+        'nb_demandes_agent': nb_demandes_agent,
+    })

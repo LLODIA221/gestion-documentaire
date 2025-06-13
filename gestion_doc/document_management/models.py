@@ -190,6 +190,13 @@ class Agent(BaseTimeStampModel):
             )
         ]
     )
+    photo = models.ImageField(
+        _("Photo"),
+        upload_to='agents/photos/',
+        null=True,
+        blank=True,
+        help_text=_("Photo de profil de l'agent")
+    )
     prenom = models.CharField(
         _("Prénom"),
         max_length=50,
