@@ -20,9 +20,13 @@
         </div>
     </div>
     <div style="margin-top:15px;">
-        <a href="{% url 'update_document' document.id %}" class="btn btn-primary btn-sm">Modifier</a>
-        <a href="{% url 'delete_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
-        <a href="{% url 'liste_documents' %}" class="btn btn-secondary btn-sm">Retour à la liste</a>
+        {% if can_update_documents %}
+            <a href="{% url 'update_document' document.id %}" class="btn btn-secondary btn-sm">Modifier</a>
+         {% endif %}
+        {% if can_delete_documents %}
+             <a href="{% url 'delete_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+        {% endif %}
+             <a href="{% url 'liste_documents' %}" class="btn btn-secondary btn-sm">Retour à la liste</a>
     </div>
 </div>
 <hr>

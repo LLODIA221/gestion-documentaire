@@ -296,17 +296,31 @@ def detail_categorieDocument(request, categorieDocument_id):
 
 @login_required
 def liste_permissions(request):
-    permissions_list = Permission.objects.all().order_by('entity', 'action')
-    paginator = Paginator(permissions_list, 10)  # nombre de permissions par page
+    # Récupérer les paramètres de filtrage
+    entity = request.GET.get('entity')
+    action = request.GET.get('action')
 
+    # Filtrer les permissions
+    permissions_list = Permission.objects.all()
+    if entity:
+        permissions_list = permissions_list.filter(entity=entity)
+    if action:
+        permissions_list = permissions_list.filter(action=action)
+
+    # Trier les permissions
+    permissions_list = permissions_list.order_by('entity', 'action')
+
+    # Pagination
+    paginator = Paginator(permissions_list, 10)  # nombre de permissions par page
     page_number = request.GET.get('page')
-    permissions = paginator.get_page(page_number)  # renvoie un objet Page
+    permissions = paginator.get_page(page_number)
 
     # Logging
     log_event(request.user, 'READ', 'Permission', None, details="Consultation de la liste des permissions", request=request)
 
     return render(request, 'permissions/liste.html', {
-        'permissions': permissions
+        'permissions': permissions,
+        'permission_form': Permission,  # Pour accéder aux choix dans le template
     })
 
 

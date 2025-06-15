@@ -36,8 +36,13 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                <a href="{% url 'update_categorieDocument' categorieDocument.id %}" class="btn btn-outline-primary me-2">✏️ Modifier</a>
-                <a href="{% url 'delete_categorieDocument' categorieDocument.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+                
+                {% if can_update_categories %}
+                <a href="{% url 'update_categorieDocument' categorie.id %}" class="btn btn-secondary btn-sm">✏️ Modifier</a>
+                {% endif %}
+                {% if can_delete_categories %}
+                <a href="{% url 'delete_categorieDocument' categorie.id %}" class="btn btn-danger btn-sm">🗑️ Supprimer</a>
+                {% endif %}
             </div>
         </div>
     </div>

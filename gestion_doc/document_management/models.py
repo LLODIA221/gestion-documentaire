@@ -96,6 +96,7 @@ class Permission(models.Model):
         ('READ', _('Lire')),
         ('UPDATE', _('Modifier')),
         ('DELETE', _('Supprimer')),
+        ('ALL', _('Toutes')),
     ]
     
     entity = models.CharField(_("Entité"), max_length=50, choices=ENTITY_CHOICES)

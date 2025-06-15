@@ -6,7 +6,45 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Liste des Permissions</h2>
-        <a href="{% url 'add_permission' %}" class="btn btn-primary">Ajouter une Permission</a>
+        {% if can_create_permissions %}
+        <a href="{% url 'add_permission' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Ajouter une Permission
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="entity" class="form-label">Entité</label>
+                    <select name="entity" id="entity" class="form-select">
+                        <option value="">Toutes les entités</option>
+                        {% for value, label in permission_form.ENTITY_CHOICES %}
+                        <option value="{{ value }}" {% if request.GET.entity == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="action" class="form-label">Action</label>
+                    <select name="action" id="action" class="form-select">
+                        <option value="">Toutes les actions</option>
+                        {% for value, label in permission_form.ACTION_CHOICES %}
+                        <option value="{{ value }}" {% if request.GET.action == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-filter"></i> Filtrer
+                    </button>
+                    <a href="{% url 'liste_permissions' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
     {% if permissions %}
@@ -14,63 +52,103 @@
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>Entité</th>
-                    <th>Action</th>
-                    <th>Description</th>
-                    <th style="width: 255px;">Actions</th>
+                    <th style="width: 30%">Entité</th>
+                    <th style="width: 20%">Action</th>
+                    <th style="width: 35%">Description</th>
+                    <th style="width: 15%">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for permission in permissions %}
                 <tr>
-                    <td>{{ permission.get_entity_display }}</td>
-                    <td>{{ permission.get_action_display }}</td>
+                    <td>
+                        <span class="badge bg-primary">{{ permission.get_entity_display }}</span>
+                    </td>
+                    <td>
+                        <span class="badge {% if permission.action == 'CREATE' %}bg-success{% elif permission.action == 'READ' %}bg-info{% elif permission.action == 'UPDATE' %}bg-warning{% elif permission.action == 'DELETE' %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ permission.get_action_display }}
+                        </span>
+                    </td>
                     <td>{{ permission.description }}</td>
                     <td>
-                        <a href="{% url 'detail_permission' permission.id %}" class="btn btn-sm btn-info me-1">Détails</a>
-                        <a href="{% url 'update_permission' permission.id %}" class="btn btn-sm btn-warning me-1">Modifier</a>
-                        <a href="{% url 'delete_permission' permission.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                        <div class="btn-group" role="group">
+                            {% if can_read_permissions %}
+                            <a href="{% url 'detail_permission' permission.id %}" class="btn btn-sm btn-info" title="Détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% endif %}
+
+                            {% if can_update_permissions %}
+                            <a href="{% url 'update_permission' permission.id %}" class="btn btn-sm btn-warning" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if can_delete_permissions %}
+                            <a href="{% url 'delete_permission' permission.id %}" class="btn btn-sm btn-danger" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        {% if permissions.paginator.num_pages > 1 %}
-        <nav aria-label="Pagination">
-            <ul class="pagination justify-content-center mt-4">
-              {% if permissions.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" href="?page=1">« Première</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ permissions.previous_page_number }}">‹ Précédente</a>
-                </li>
-              {% else %}
-                <li class="page-item disabled"><span class="page-link">« Première</span></li>
-                <li class="page-item disabled"><span class="page-link">‹ Précédente</span></li>
-              {% endif %}
-          
-              <li class="page-item disabled">
-                <span class="page-link">Page {{ permissions.number }} sur {{ permissions.paginator.num_pages }}</span>
-              </li>
-          
-              {% if permissions.has_next %}
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ permissions.next_page_number }}">Suivante ›</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ permissions.paginator.num_pages }}">Dernière »</a>
-                </li>
-              {% else %}
-                <li class="page-item disabled"><span class="page-link">Suivante ›</span></li>
-                <li class="page-item disabled"><span class="page-link">Dernière »</span></li>
-              {% endif %}
-            </ul>
-          </nav>
-          {% endif %}
     </div>
+
+    {% if permissions.paginator.num_pages > 1 %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if permissions.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.entity %}&entity={{ request.GET.entity }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ permissions.previous_page_number }}{% if request.GET.entity %}&entity={{ request.GET.entity }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ permissions.number }} sur {{ permissions.paginator.num_pages }}</span>
+            </li>
+
+            {% if permissions.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ permissions.next_page_number }}{% if request.GET.entity %}&entity={{ request.GET.entity }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ permissions.paginator.num_pages }}{% if request.GET.entity %}&entity={{ request.GET.entity }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link"><i class="fas fa-angle-double-right"></i></span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
     {% else %}
     <div class="alert alert-warning text-center mt-4" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
         Aucune permission enregistrée.
     </div>
     {% endif %}

@@ -37,18 +37,18 @@
                         </h5>
                     </div>
                     <div id="collapse_{{ entity }}" class="collapse show" aria-labelledby="heading_{{ entity }}" data-bs-parent="#permissionsAccordion">
-                        <div class="card-body">
+                        <div class="card-body py-3">
                             <div class="row">
                                 {% for action, perm in group.actions.items %}
-                                <div class="col-md-3">
-                                    <div class="form-check">
+                                <div class="col-12 mb-2">
+                                    <div class="form-check d-flex align-items-center">
                                         <input type="checkbox"
                                                name="permissions"
                                                value="{{ perm.id }}"
                                                id="permission_{{ perm.id }}"
                                                class="form-check-input"
                                                {% if role and perm in role.permissions.all %}checked{% endif %}>
-                                        <label class="form-check-label" for="permission_{{ perm.id }}">
+                                        <label class="form-check-label ms-2 permission-label" for="permission_{{ perm.id }}">
                                             {{ perm.get_action_display }}
                                         </label>
                                     </div>
@@ -80,4 +80,11 @@ function updateNiveau() {
     document.getElementById('niveau').value = niveau;
 }
 </script>
+
+<style>
+    .permission-label {
+        min-width: 150px; /* Ajustez au besoin pour s'adapter au libellé le plus long */
+        white-space: normal; /* Permettre au texte de revenir à la ligne */
+    }
+</style>
 {% endblock %}

@@ -15,7 +15,7 @@ def permissions_context(request):
         afficher_delegations = afficher_structures = afficher_agents = afficher_documents = afficher_roles = afficher_categories = afficher_permissions = afficher_notifications = afficher_demandes = True
         afficher_users = False
     elif role_name == 'CONTROLLER':
-        afficher_agents = afficher_documents = afficher_categories = afficher_structures = afficher_roles = afficher_permissions = afficher_users = afficher_notifications = afficher_demandes = True
+        afficher_agents = afficher_documents = afficher_categories = afficher_structures = afficher_delegations = afficher_roles = afficher_permissions = afficher_users = afficher_notifications = afficher_demandes = True
         # Lecture seule, pas de création/modif/suppression
     elif role_name == 'AGENT':
         afficher_documents = afficher_notifications = afficher_demandes = True
@@ -36,7 +36,8 @@ def permissions_context(request):
     # Permissions fines pour les templates
     # Par défaut, les agents ont toutes les permissions
     if role_name == 'AGENT':
-        can_read_documents = can_create_documents = can_update_documents = can_delete_documents = True
+        can_read_documents  = True
+        can_create_documents = can_update_documents = can_delete_documents = False
         can_read_agents = can_create_agents = can_update_agents = can_delete_agents = False
         can_read_roles = can_create_roles = can_update_roles = can_delete_roles = False
         can_read_structures = can_create_structures = can_update_structures = can_delete_structures = False
@@ -60,6 +61,10 @@ def permissions_context(request):
         can_create_roles = has_perm('ROLES', 'CREATE')
         can_update_roles = has_perm('ROLES', 'UPDATE')
         can_delete_roles = has_perm('ROLES', 'DELETE')
+        can_read_permissions = has_perm('PERMISSIONS', 'READ')
+        can_create_permissions = has_perm('PERMISSIONS', 'CREATE')
+        can_update_permissions = has_perm('PERMISSIONS', 'UPDATE')
+        can_delete_permissions = has_perm('PERMISSIONS', 'DELETE')
         can_read_structures = has_perm('STRUCTURE', 'READ')
         can_create_structures = has_perm('STRUCTURE', 'CREATE')
         can_update_structures = has_perm('STRUCTURE', 'UPDATE')
@@ -105,7 +110,7 @@ def permissions_context(request):
         'can_create_roles': can_create_roles,
         'can_update_roles': can_update_roles,
         'can_delete_roles': can_delete_roles,
-        'can_read_permissions': role_name == 'ADMIN',  # Seul l'admin peut lire les permissions
+        'can_read_permissions': can_read_permissions,  # Seul l'admin peut lire les permissions
         'can_create_permissions': role_name == 'ADMIN',  # Seul l'admin peut créer des permissions
         'can_update_permissions': role_name == 'ADMIN',  # Seul l'admin peut mettre à jour les permissions
         'can_delete_permissions': role_name == 'ADMIN',  # Seul l'admin peut supprimer des permissions
