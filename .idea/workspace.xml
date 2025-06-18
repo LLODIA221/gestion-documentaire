@@ -4,9 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="945b20f9-2329-42c5-8ea2-898f92e887b9" name="Changes" comment="adaptation du dashboard selon le role , adding more features">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/agents/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/agents/detail.html" afterDir="false" />
+    <list default="true" id="945b20f9-2329-42c5-8ea2-898f92e887b9" name="Changes" comment="implementations notifs generation d'un fichier excel pour les infos users">
+      <change afterPath="$PROJECT_DIR$/gestion_doc/NOTIFICATIONS_README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gestion_doc/document_management/management/commands/check_document_expiration.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gestion_doc/document_management/management/commands/setup_media.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/notifications/delete.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/notifications/liste.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/roles/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/structures/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/structures/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/liste.html" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/templates/users/liste.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/document_management/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/document_management/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gestion_doc/gestion_doc/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestion_doc/gestion_doc/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,15 +50,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "Jupyter Settings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Jupyter Settings&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="945b20f9-2329-42c5-8ea2-898f92e887b9" name="Changes" comment="" />
@@ -69,12 +83,21 @@
       <option name="project" value="LOCAL" />
       <updated>1749073732602</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="implementations notifs generation d'un fichier excel pour les infos users">
+      <option name="closed" value="true" />
+      <created>1750245394079</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1750245394079</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="second commit,refactorisation des poins cles ,dashboard,templates ect..." />
     <MESSAGE value="adaptation du dashboard selon le role , adding more features" />
-    <option name="LAST_COMMIT_MESSAGE" value="adaptation du dashboard selon le role , adding more features" />
+    <MESSAGE value="implementations notifs generation d'un fichier excel pour les infos users" />
+    <option name="LAST_COMMIT_MESSAGE" value="implementations notifs generation d'un fichier excel pour les infos users" />
   </component>
 </project>

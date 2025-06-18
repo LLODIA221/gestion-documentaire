@@ -1,3 +1,4 @@
 Django>=5.1,<6.0
 Pillow>=10.0.0  # Pour la gestion des fichiers images (upload)
-django-crispy-forms>=2.0  # Pour de meilleurs formulaires 
+django-crispy-forms>=2.0  # Pour de meilleurs formulaires
+openpyxl>=3.1.0  # Pour la manipulation des fichiers Excel
