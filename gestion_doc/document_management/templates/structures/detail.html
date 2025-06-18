@@ -32,8 +32,13 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                <a href="{% url 'update_structure' structure.id %}" class="btn btn-outline-primary me-2">✏️ Modifier</a>
-                <a href="{% url 'delete_structure' structure.id %}" class="btn btn-outline-danger">🗑️ Supprimer</a>
+
+                {% if can_update_structures %}
+                <a href="{% url 'update_structure' structure.id %}" class="btn btn-sm btn-warning me-1">✏️ Modifier</a>
+                {% endif %}
+                {% if can_delete_structures %}
+                <a href="{% url 'delete_structure' structure.id %}" class="btn btn-sm btn-danger">🗑️  Supprimer</a>
+                {% endif %}
             </div>
         </div>
     </div>

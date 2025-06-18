@@ -69,4 +69,11 @@ urlpatterns = [
     path('journaux/<int:journal_id>/', detail_journal, name='detail_journal'),
 
     path('profile/', profile, name='profile'),
+
+    # Notifications
+    path('notifications/', liste_notifications, name='liste_notifications'),
+    path('notifications/<int:notification_id>/marquer-lue/', marquer_notification_lue, name='marquer_notification_lue'),
+    path('notifications/marquer-toutes-lues/', marquer_toutes_notifications_lues, name='marquer_toutes_notifications_lues'),
+    path('notifications/<int:notification_id>/supprimer/', supprimer_notification, name='supprimer_notification'),
+    path('notifications/ajax/', notifications_ajax, name='notifications_ajax'),
 ]

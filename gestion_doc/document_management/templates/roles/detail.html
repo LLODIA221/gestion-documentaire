@@ -34,8 +34,12 @@
             </table>
             
             <div class="mt-3">
-                <a href="{% url 'update_role' role.id %}" class="btn btn-warning">Modifier</a>
-                <a href="{% url 'delete_role' role.id %}" class="btn btn-danger">Supprimer</a>
+                {% if can_update_roles %}
+                        <a href="{% url 'update_role' role.id %}" class="btn btn-sm btn-warning me-1">Modifier</a>
+                        {% endif %}
+                        {% if can_delete_roles %}
+                        <a href="{% url 'delete_role' role.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                        {% endif %}
                 <a href="{% url 'liste_roles' %}" class="btn btn-secondary">Retour à la liste</a>
             </div>
         </div>

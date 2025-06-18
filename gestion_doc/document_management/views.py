@@ -1,6 +1,6 @@
 from django.contrib import messages 
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import CategorieDocument, Delegation, Permission, Role, Structure, Agent, Document, DocumentVersion, Journal, Demande
+from .models import CategorieDocument, Delegation, Permission, Role, Structure, Agent, Document, DocumentVersion, Journal, Demande, Notification
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import random
@@ -9,6 +9,13 @@ from django.contrib.auth.hashers import make_password
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 from django.core.paginator import Paginator
+import openpyxl
+from openpyxl.styles import Font, Alignment
+import os
+from django.conf import settings
+from datetime import timedelta
+from django.http import JsonResponse
+from django.db.models import Q
 # Create your views here.
 
 @login_required
@@ -548,6 +555,45 @@ def add_agent(request):
                     is_active=is_active,
                     photo=photo
                 )
+                
+                # Créer le fichier Excel avec les informations de connexion
+                wb = openpyxl.Workbook()
+                ws = wb.active
+                ws.title = "Informations de connexion"
+                
+                # Ajouter les en-têtes
+                headers = ["Champ", "Valeur"]
+                for col, header in enumerate(headers, 1):
+                    cell = ws.cell(row=1, column=col)
+                    cell.value = header
+                    cell.font = Font(bold=True)
+                    cell.alignment = Alignment(horizontal='center')
+                
+                # Ajouter les données
+                data = [
+                    ("Nom complet", f"{prenom} {nom}"),
+                    ("Matricule", matricule),
+                    ("Mot de passe", password),
+                    ("Email", email)
+                ]
+                
+                for row, (field, value) in enumerate(data, 2):
+                    ws.cell(row=row, column=1, value=field)
+                    ws.cell(row=row, column=2, value=value)
+                
+                # Ajuster la largeur des colonnes
+                ws.column_dimensions['A'].width = 15
+                ws.column_dimensions['B'].width = 30
+                
+                # Créer le dossier credentials s'il n'existe pas
+                credentials_dir = os.path.join(settings.MEDIA_ROOT, 'credentials')
+                os.makedirs(credentials_dir, exist_ok=True)
+                
+                # Sauvegarder le fichier avec un nom sécurisé
+                safe_filename = f"{nom}_{matricule}_credentials.xlsx".replace('/', '_').replace('\\', '_')
+                filepath = os.path.join(credentials_dir, safe_filename)
+                wb.save(filepath)
+                
                 log_event(request.user, 'CREATE', 'Agent', agent.id, details=f"Ajout de l'agent {prenom} {nom}")
                 messages.success(request, f"Agent ajouté avec succès. Identifiant : {user.username} | Mot de passe : {password}")
                 return redirect('liste_agents')
@@ -599,6 +645,7 @@ def update_agent(request, agent_id):
         'roles': roles
     })
 
+@login_required
 def delete_agent(request, agent_id):
     agent = get_object_or_404(Agent, id=agent_id)
     if request.method == 'POST':
@@ -677,6 +724,9 @@ def liste_documents(request):
 
 @login_required
 def add_document(request):
+    """
+    Vue pour ajouter un document avec notifications
+    """
     categories = CategorieDocument.objects.all()
     agents = Agent.objects.all()
     if request.method == 'POST':
@@ -702,6 +752,30 @@ def add_document(request):
                 agent=Agent.objects.get(id=agent_id),
                 fichier=fichier
             )
+            
+            # Créer une notification pour l'agent propriétaire du document
+            agent = document.agent
+            if agent.user != request.user:  # Ne pas notifier si l'utilisateur crée son propre document
+                create_notification(
+                    user=agent.user,
+                    objet="Nouveau document assigné",
+                    message=f"Un nouveau document '{libelle}' vous a été assigné par {request.user.agent_profile.get_full_name()}.",
+                    type='INFO',
+                    url=f'/documents/detail/{document.id}/'
+                )
+            
+            # Notifier les gestionnaires et administrateurs
+            gestionnaires = Agent.objects.filter(role__libelle__in=['GESTIONNAIRE', 'ADMIN'])
+            for gestionnaire in gestionnaires:
+                if gestionnaire.user != request.user:
+                    create_notification(
+                        user=gestionnaire.user,
+                        objet="Nouveau document créé",
+                        message=f"Un nouveau document '{libelle}' a été créé par {request.user.agent_profile.get_full_name()}.",
+                        type='INFO',
+                        url=f'/documents/detail/{document.id}/'
+                    )
+            
             log_event(request.user, 'CREATE', 'Document', document.id, details=f"Ajout du document {libelle}")
             messages.success(request, "Document ajouté avec succès")
             return redirect('liste_documents')
@@ -714,11 +788,15 @@ def add_document(request):
 
 @login_required
 def update_document(request, document_id):
+    """
+    Vue pour modifier un document avec notifications
+    """
     document = get_object_or_404(Document, id=document_id)
     categories = CategorieDocument.objects.all()
     agents = Agent.objects.all()
     if request.method == 'POST':
         old_libelle = document.libelle
+        old_agent = document.agent
         document.libelle = request.POST.get('libelle')
         document.date_expiration = request.POST.get('date_expiration') or None
         categorie_id = request.POST.get('categorie_document')
@@ -736,6 +814,39 @@ def update_document(request, document_id):
             document.fichier = fichier
         try:
             document.save()
+            
+            # Notifier l'ancien agent si le document a changé de propriétaire
+            if old_agent != document.agent and old_agent.user != request.user:
+                create_notification(
+                    user=old_agent.user,
+                    objet="Document réassigné",
+                    message=f"Le document '{document.libelle}' ne vous appartient plus. Il a été réassigné par {request.user.agent_profile.get_full_name()}.",
+                    type='WARNING',
+                    url=f'/documents/detail/{document.id}/'
+                )
+            
+            # Notifier le nouvel agent si le document a changé de propriétaire
+            if old_agent != document.agent and document.agent.user != request.user:
+                create_notification(
+                    user=document.agent.user,
+                    objet="Document assigné",
+                    message=f"Le document '{document.libelle}' vous a été assigné par {request.user.agent_profile.get_full_name()}.",
+                    type='INFO',
+                    url=f'/documents/detail/{document.id}/'
+                )
+            
+            # Notifier les gestionnaires et administrateurs
+            gestionnaires = Agent.objects.filter(role__libelle__in=['GESTIONNAIRE', 'ADMIN'])
+            for gestionnaire in gestionnaires:
+                if gestionnaire.user != request.user:
+                    create_notification(
+                        user=gestionnaire.user,
+                        objet="Document modifié",
+                        message=f"Le document '{document.libelle}' a été modifié par {request.user.agent_profile.get_full_name()}.",
+                        type='INFO',
+                        url=f'/documents/detail/{document.id}/'
+                    )
+            
             log_event(request.user, 'UPDATE', 'Document', document.id, details=f"Modification du document {old_libelle} -> {document.libelle}")
             messages.success(request, "Document modifié avec succès")
             return redirect('liste_documents')
@@ -837,3 +948,140 @@ def profile(request):
         'nb_documents_agent': nb_documents_agent,
         'nb_demandes_agent': nb_demandes_agent,
     })
+
+# ==================== VUES DE NOTIFICATIONS ====================
+
+def create_notification(user, objet, message, type='INFO', url=''):
+    """
+    Fonction utilitaire pour créer une notification
+    """
+    return Notification.objects.create(
+        user=user,
+        objet=objet,
+        message=message,
+        type=type,
+        url=url
+    )
+
+def check_document_expiration():
+    """
+    Fonction pour vérifier l'expiration des documents et créer des notifications
+    """
+    today = timezone.now().date()
+    # Documents expirant dans les 7 prochains jours
+    expiring_soon = Document.objects.filter(
+        date_expiration__gte=today,
+        date_expiration__lte=today + timedelta(days=7),
+        is_archived=False
+    )
+    
+    # Documents expirés
+    expired = Document.objects.filter(
+        date_expiration__lt=today,
+        is_archived=False
+    )
+    
+    # Créer des notifications pour les documents expirant bientôt
+    for document in expiring_soon:
+        days_until_expiry = (document.date_expiration - today).days
+        if days_until_expiry == 0:
+            message = f"Le document '{document.libelle}' expire aujourd'hui !"
+            type = 'ERROR'
+        else:
+            message = f"Le document '{document.libelle}' expire dans {days_until_expiry} jour(s)."
+            type = 'WARNING'
+        
+        create_notification(
+            user=document.agent.user,
+            objet="Expiration de document",
+            message=message,
+            type=type,
+            url=f'/documents/detail/{document.id}/'
+        )
+    
+    # Créer des notifications pour les documents expirés
+    for document in expired:
+        create_notification(
+            user=document.agent.user,
+            objet="Document expiré",
+            message=f"Le document '{document.libelle}' a expiré le {document.date_expiration}.",
+            type='ERROR',
+            url=f'/documents/detail/{document.id}/'
+        )
+
+@login_required
+def liste_notifications(request):
+    """
+    Vue pour afficher la liste des notifications de l'utilisateur
+    """
+    notifications = Notification.objects.filter(user=request.user).order_by('-date_creation')
+    paginator = Paginator(notifications, 20)
+    page_number = request.GET.get('page')
+    notifications = paginator.get_page(page_number)
+    
+    return render(request, 'notifications/liste.html', {
+        'notifications': notifications
+    })
+
+@login_required
+def marquer_notification_lue(request, notification_id):
+    """
+    Vue pour marquer une notification comme lue
+    """
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.mark_as_read()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+    
+    return redirect('liste_notifications')
+
+@login_required
+def marquer_toutes_notifications_lues(request):
+    """
+    Vue pour marquer toutes les notifications comme lues
+    """
+    if request.method == 'POST':
+        Notification.objects.filter(user=request.user, is_read=False).update(
+            is_read=True,
+            date_lecture=timezone.now()
+        )
+        messages.success(request, "Toutes les notifications ont été marquées comme lues.")
+    
+    return redirect('liste_notifications')
+
+@login_required
+def supprimer_notification(request, notification_id):
+    """
+    Vue pour supprimer une notification
+    """
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    if request.method == 'POST':
+        notification.delete()
+        messages.success(request, "Notification supprimée avec succès.")
+        return redirect('liste_notifications')
+    
+    return render(request, 'notifications/delete.html', {'notification': notification})
+
+@login_required
+def notifications_ajax(request):
+    """
+    Vue AJAX pour récupérer les notifications non lues
+    """
+    notifications = Notification.objects.filter(
+        user=request.user,
+        is_read=False
+    ).order_by('-date_creation')[:5]
+    
+    data = []
+    for notification in notifications:
+        data.append({
+            'id': notification.id,
+            'objet': notification.objet,
+            'message': notification.message,
+            'type': notification.type,
+            'date_creation': notification.date_creation.strftime('%d/%m/%Y %H:%M'),
+            'url': notification.url
+        })
+    
+    return JsonResponse({'notifications': data})

@@ -34,21 +34,27 @@ def permissions_context(request):
     nb_categories = CategorieDocument.objects.count()
 
     # Permissions fines pour les templates
-    # Par défaut, les agents ont toutes les permissions
+    # Initialiser toutes les variables de permissions à False par défaut
+    can_read_documents = can_create_documents = can_update_documents = can_delete_documents = False
+    can_read_agents = can_create_agents = can_update_agents = can_delete_agents = False
+    can_read_roles = can_create_roles = can_update_roles = can_delete_roles = False
+    can_read_structures = can_create_structures = can_update_structures = can_delete_structures = False
+    can_read_delegations = can_create_delegations = can_update_delegations = can_delete_delegations = False
+    can_read_categories = can_create_categories = can_update_categories = can_delete_categories = False
+    can_read_permissions = can_create_permissions = can_update_permissions = can_delete_permissions = False
+    can_read_users = can_create_users = can_update_users = can_delete_users = False
+
     if role_name == 'AGENT':
-        can_read_documents  = True
-        can_create_documents = can_update_documents = can_delete_documents = False
-        can_read_agents = can_create_agents = can_update_agents = can_delete_agents = False
-        can_read_roles = can_create_roles = can_update_roles = can_delete_roles = False
-        can_read_structures = can_create_structures = can_update_structures = can_delete_structures = False
-        can_read_delegations = can_create_delegations = can_update_delegations = can_delete_delegations = False
-        can_read_categories = can_create_categories = can_update_categories = can_delete_categories = False
+        can_read_documents = True
+        can_read_notifications = True
+        can_read_demandes = True
     else:
         permissions = set()
         if role:
             permissions = set(role.permissions.values_list('entity', 'action'))
         def has_perm(entity, action):
             return (entity, action) in permissions or (entity, 'ALL') in permissions
+        
         can_read_documents = has_perm('DOCUMENTS', 'READ')
         can_create_documents = has_perm('DOCUMENTS', 'CREATE')
         can_update_documents = has_perm('DOCUMENTS', 'UPDATE')
@@ -77,6 +83,11 @@ def permissions_context(request):
         can_create_categories = has_perm('CATEGORIE_DOCUMENTS', 'CREATE')
         can_update_categories = has_perm('CATEGORIE_DOCUMENTS', 'UPDATE')
         can_delete_categories = has_perm('CATEGORIE_DOCUMENTS', 'DELETE')
+        #permissions pour les utilisateurs
+        can_read_users = has_perm('USERS', 'READ')
+        can_create_users = has_perm('USERS', 'CREATE')  
+        can_update_users = has_perm('USERS', 'UPDATE')
+        can_delete_users = has_perm('USERS', 'DELETE')
 
     return {
         'afficher_delegations': afficher_delegations,
@@ -114,6 +125,10 @@ def permissions_context(request):
         'can_create_permissions': role_name == 'ADMIN',  # Seul l'admin peut créer des permissions
         'can_update_permissions': role_name == 'ADMIN',  # Seul l'admin peut mettre à jour les permissions
         'can_delete_permissions': role_name == 'ADMIN',  # Seul l'admin peut supprimer des permissions
+        'can_read_users': can_read_users,
+        'can_create_users': can_create_users,
+        'can_update_users': can_update_users,
+        'can_delete_users': can_delete_users,
         'can_read_structures': can_read_structures,
         'can_create_structures': can_create_structures,
         'can_update_structures': can_update_structures,

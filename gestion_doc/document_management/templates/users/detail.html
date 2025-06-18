@@ -1,16 +1,51 @@
 {% extends 'base.html' %}
 {% block title %}Détail Utilisateur{% endblock %}
 {% block content %}
-<h2>Détail de l'utilisateur</h2>
-<ul>
-    <li><strong>Username :</strong> {{ user.username }}</li>
-    <li><strong>Email :</strong> {{ user.email }}</li>
-    <li><strong>Nom :</strong> {{ user.last_name }}</li>
-    <li><strong>Prénom :</strong> {{ user.first_name }}</li>
-    <li><strong>Actif :</strong> {% if user.is_active %}Oui{% else %}Non{% endif %}</li>
-</ul>
-<a href="{% url 'update_user' user.id %}">Modifier</a> |
-<a href="{% url 'delete_user' user.id %}">Supprimer</a> |
-<a href="{% url 'reset_password_user' user.id %}">Réinitialiser mot de passe</a> |
-<a href="{% url 'liste_users' %}">Retour à la liste</a>
-{% endblock %} 
+<div class="container mt-4">
+    <div class="mb-4">
+        <a href="{% url 'liste_users' %}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+
+    <div class="card shadow-sm rounded">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">👤 Détails de l'Utilisateur</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Username :</strong></div>
+                <div class="col-md-8">{{ user.username }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Email :</strong></div>
+                <div class="col-md-8">{{ user.email }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Nom :</strong></div>
+                <div class="col-md-8">{{ user.last_name }}</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Prénom :</strong></div>
+                <div class="col-md-8">{{ user.first_name }}</div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-4"><strong>Statut :</strong></div>
+                <div class="col-md-8">
+                    {% if user.is_active %}
+                        <span class="badge bg-success">Actif</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactif</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                {% if request.user.is_superuser %}
+                <a href="{% url 'update_user' user.id %}" class="btn btn-sm btn-warning me-1">✏️ Modifier</a>
+                <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-danger me-1">🗑️ Supprimer</a>
+                <a href="{% url 'reset_password_user' user.id %}" class="btn btn-sm btn-secondary">🔑 Réinitialiser mot de passe</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

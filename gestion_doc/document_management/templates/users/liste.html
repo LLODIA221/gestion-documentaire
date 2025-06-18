@@ -38,10 +38,12 @@
                     </td>
                     <td>
                         <a href="{% url 'detail_user' user.id %}" class="btn btn-sm btn-info me-1 mb-1">Détail</a>
-                       
+
+                       {% if request.user.is_superuser %}
                         <a href="{% url 'update_user' user.id %}" class="btn btn-sm btn-warning me-1 mb-1">Modifier</a>
                         <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-danger me-1 mb-1">Supprimer</a>
                         <a href="{% url 'reset_password_user' user.id %}" class="btn btn-sm btn-secondary mb-1">Réinitialiser mot de passe</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

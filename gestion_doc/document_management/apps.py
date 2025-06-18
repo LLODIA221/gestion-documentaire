@@ -13,6 +13,7 @@ class DocumentManagementConfig(AppConfig):
             try:
                 call_command('create_default_permissions')
                 call_command('create_default_users')
+                call_command('setup_media')
             except Exception as e:
                 # On ignore les erreurs pour ne pas bloquer le serveur
                 pass
